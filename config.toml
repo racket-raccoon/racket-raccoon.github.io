@@ -1,0 +1,44 @@
+theme = "radion"
+
+base_url = "https://racket-raccoon.github.io"
+compile_sass = true
+title = "Racket Raccoon"
+description = "It's a Bird... It's a Plane... It's yet another blog!"
+generate_feeds = true
+
+taxonomies = [
+    {name = "tags", feed = true},
+]
+
+# When set to "true", a search index is built from the pages and section
+# content for `default_language`.
+build_search_index = true 
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customized by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+
+highlight_theme = "one-dark"
+
+[search]
+index_format = "elasticlunr_json"
+
+[extra]
+radion_menu = [
+    {url = "$BASE_URL/", name = "Home"},
+    {url = "$BASE_URL/tags", name = "Tags"},
+]
+radion_title = "Racket Raccoon"
+
+# Nicer codeblocks with copy to clipboard 
+codeblock = false
+
+# Enable MathJax support
+latex = true
+
+# Enable search bar 
+enable_search = true 
+
+# Light/Dark Mode set 
+theme = "toggle" # options: {light, dark, auto, toggle}
