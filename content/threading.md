@@ -1,3 +1,4 @@
+
 +++
 title = "Threading and Function Composition"
 date = 2025-01-15
@@ -5,9 +6,11 @@ date = 2025-01-15
 tags = ["threading", "Procedures", "Clojure"]
 +++
 
-One of the features I started using extensively this year is a threading macro. The word "thread" in this context means passing a value through a pipeline of functions and has nothing to do with concurrent threads of execution. Also, I wanted to give an honorable mention to some higher-order functions we have out of the box from Racket.
+One of the features I started using extensively this year is a threading macro. Also, I wanted to give an honorable mention to some higher-order functions we have out of the box from Racket.
 
 <!-- more -->
+
+> **_NOTE_** The word "thread" in this context means passing a value through a pipeline of functions and has nothing to do with concurrent threads of execution.
 
 ## TLDR; It's just syntactic sugar to flatten nested function calls for readability. With this macro, you can rewrite `(add1 (exact-floor (log num 10)))` as `(~> num (log 10) exact-floor add1)`.
 
@@ -33,7 +36,7 @@ Now let's take a step back and talk about some tools Racket gives us out of the 
 (define digits.v2 (λ~> (log 10) exact-floor add1))
 ```
 
-Not only does `compose` apply those functions in reverse order, but we also had to use `curryr` to provide an adapter for the `log` function. The threading macro will always try to plug the value into the first parameter hole but also provides that magic `_` that allows you to specify where to put it, as we did in the line `(map (curryr string-ref 0) _) ; '(#\C #\M #\O #\S)` of our acronym example. `λ~>` or `lambda~>` here demonstrates how we can obtain a function that represents the pipeline to pass it into another higher-order function, e.g. `map` or `filter`.
+Not only does `compose` apply those functions in reverse order, but we also had to use `curryr` to provide an adapter for the `log` function - if you're unfamiliar using `curryr` here is basically equivalent to `(λ (x) (log x 10))`. The threading macro will always try to plug the value into the first parameter hole but also provides that magic `_` that allows you to specify where to put it, as we did in the line `(map (curryr string-ref 0) _) ; '(#\C #\M #\O #\S)` of our acronym example. `λ~>` or `lambda~>` here demonstrates how we can obtain a function that represents the pipeline to pass it into another higher-order function, e.g. `map` or `filter`.
 
 A lot of those functions could save you from writing yet another lambda or currying a function. I want to finish this text by mentioning a couple of [functions](https://docs.racket-lang.org/reference/procedures.html#%28part._.Additional_.Higher-.Order_.Functions%29) provided by `racket/function` and `racket` but not `racket/base`. Let's give an honorable mention to the `identity` function, which is surprisingly useful for a function that just returns back whatever you passed in. Here is a simplified example from SICP - functions `sum-cubes` and `sum-integers` are implemented in terms of a higher-order `sum` function:
 
