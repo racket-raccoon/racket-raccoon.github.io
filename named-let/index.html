@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+     
+    <meta name="description" content="It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!" />
+     
+
+    <title>
+    
+    Named Let and Mutual Recursion
+    
+</title>
+
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+     
+    <link
+      rel="stylesheet"
+      href="https://racket-raccoon.github.io/site.css"
+    />
+      
+  </head>
+
+  <body class="hack dark main container">
+    
+    
+         
+    <header class="nav-header">
+
+        <a href="/" style="all: unset; cursor: pointer;">
+          <img
+            src="/images/avatar.png"
+            alt="Raccoon - Racket programming language mascot"
+            style="width: 60px; height: auto; border-radius: 50%;"
+          />
+        </a>
+<!--        
+      <nav
+        itemscope
+        itemtype="http://schema.org/SiteNavigationElement"
+        class="navbar"
+      >
+        <div class="nav-links">
+          
+          <a
+            itemprop="url"
+            class=""
+            href="https://racket-raccoon.github.io/tags"
+          >
+            <span itemprop="name">Tags</span></a
+          >
+          
+        </div>
+      </nav>
+-->
+      <div class="user-actions-container">
+        
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="search-results">
+          <div class="search-results__items"></div>
+        </div>
+         
+        <a
+          id="dark-mode-toggle"
+          onclick="toggleTheme(); event.preventDefault();"
+          href="#"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/sun.svg"
+            id="sun-icon"
+            style="filter: invert(1)"
+            alt="Light mode"
+          />
+          <img
+            src="https://racket-raccoon.github.io/icons/moon.svg"
+            id="moon-icon"
+            alt="Dark mode"
+          />
+        </a>
+         
+        <a
+          href="https://racket-raccoon.github.io/atom.xml"
+          class="feed-icon"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/rss.svg"
+            id="rss-icon"
+            alt="RSS feed"
+            class="social-icon"
+          />
+        </a>
+         
+      </div>
+
+      
+      <!-- Set the correct theme in the script -->
+      <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script>
+        setTheme(getSavedTheme());
+      </script>
+      
+    </header>
+     
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Named Let and Mutual Recursion</h1>
+        <span class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2025-01-19
+</span>
+    </header>
+
+    <div itemprop="articleBody">
+        
+            <p>A quick introduction to the <em>named</em> <code>let</code>, why you might want to use <code>letrec</code>, and what <em>"mutually recursive functions"</em> are. To learn more about the <code>let</code> family, consult <a href="https://docs.racket-lang.org/guide/let.html" title="let">The Racket Guide</a> and <a href="https://docs.racket-lang.org/reference/let.html">The Racket Reference</a>.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>The syntax of named let initially felt alien to me, requiring multiple visits to the reference page, but it's actually quite simple. Named <code>let</code> is syntactic sugar that allows us to write a function and immediately call it in-place — perfect for recursion and basic <code>while</code> loops. Let's examine the classic SICP factorial example:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">factorial </span><span style="color:#abb2bf;">n)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">fact-iter </span><span style="color:#abb2bf;">[product </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [max-count n])
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&gt; counter max-count)
+</span><span style="color:#abb2bf;">        product
+</span><span style="color:#abb2bf;">        (fact-iter (* counter product)
+</span><span style="color:#abb2bf;">                   (+ counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                   max-count)))
+</span><span style="color:#abb2bf;">  (fact-iter))
+</span></code></pre>
+<p>The only modification here is that instead of explicitly calling <code>fact-iter</code> as <code>(fact-iter 1 1 n)</code>, we've made those arguments <a href="https://docs.racket-lang.org/guide/lambda.html#%28part._.Declaring_.Optional_.Arguments%29" title="optional arguments">optional</a> by providing default values. This makes it look very similar to the named <code>let</code> syntax:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">factorial </span><span style="color:#abb2bf;">n)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">fact-iter ([product </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [max-count n])
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&gt; counter max-count)
+</span><span style="color:#abb2bf;">        product
+</span><span style="color:#abb2bf;">        (fact-iter (* counter product)
+</span><span style="color:#abb2bf;">                   (+ counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                   max-count))))
+</span></code></pre>
+<p>Some programmers prefer using <code>let</code> over <code>define</code> for local bindings, even without a compelling reason — it's often considered a matter of style. However, the general rule is to reduce code indentation when possible and use <code>define</code> unless you need <code>let</code>-specific features. The Racket refactoring tool <a href="https://docs.racket-lang.org/resyntax/index.html" title="resyntax">resyntax</a> can automatically refactor unnecessary <code>let</code> expressions, as shown in its very first documentation example.</p>
+<p>Notably, attempting to rewrite the first example with raw <code>let</code> and <code>lambda</code> fails because the identifier created by a regular <code>let</code> can't be recursive. <code>fact-iter</code> isn't available in the <code>lambda</code> body — you must use <code>letrec</code>:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">factorial </span><span style="color:#abb2bf;">n)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">letrec </span><span style="color:#abb2bf;">([fact-iter
+</span><span style="color:#abb2bf;">            (λ ([product </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] [max-count n])
+</span><span style="color:#abb2bf;">              (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&gt; counter max-count)
+</span><span style="color:#abb2bf;">                  product
+</span><span style="color:#abb2bf;">                  (fact-iter (* counter product)
+</span><span style="color:#abb2bf;">                             (+ counter </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                             max-count)))])
+</span><span style="color:#abb2bf;">    (fact-iter)))
+</span></code></pre>
+<p>While <code>let*</code> only allows using identifiers from previous <code>[]</code> clauses, <code>letrec</code> enables both recursive use of an identifier and referencing identifiers from previous and subsequent clauses, enabling <a href="https://en.wikipedia.org/wiki/Mutual_recursion">mutually recursive functions</a>. A classic example is the <code>is-even?</code> and <code>is-odd?</code> functions defined in terms of each other. Let's use the <code>racket/trace</code> package to visualize the call stack — a valuable debugging tool, particularly for recursive calls:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">is-even? </span><span style="color:#abb2bf;">x)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(zero? x) </span><span style="color:#db9d63;">#t</span><span style="color:#abb2bf;"> (is-odd? (sub1 x))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">is-odd? </span><span style="color:#abb2bf;">x)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(zero? x) </span><span style="color:#db9d63;">#f</span><span style="color:#abb2bf;"> (is-even? (sub1 x))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">require </span><span style="color:#abb2bf;">racket/trace)
+</span><span style="color:#abb2bf;">(trace is-even? is-odd?)
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(is-even? </span><span style="color:#db9d63;">6</span><span style="color:#abb2bf;">)
+</span></code></pre>
+<pre style="background-color:#2b303b;color:#6c7079;"><code><span style="color:#abb2bf;">&gt;(is-even? 6)
+</span><span style="color:#abb2bf;">&gt;(is-odd? 5)
+</span><span style="color:#abb2bf;">&gt;(is-even? 4)
+</span><span style="color:#abb2bf;">&gt;(is-odd? 3)
+</span><span style="color:#abb2bf;">&gt;(is-even? 2)
+</span><span style="color:#abb2bf;">&gt;(is-odd? 1)
+</span><span style="color:#abb2bf;">&gt;(is-even? 0)
+</span><span style="color:#abb2bf;">&lt;#t
+</span><span style="color:#abb2bf;">#t
+</span></code></pre>
+<p>Now you can see these functions playing ping-pong, calling each other until reaching a base case. Finally, here's the same example rewritten using <code>letrec</code>, which allows mutual recursion even though <code>is-odd?</code> is referenced before being defined:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">letrec </span><span style="color:#abb2bf;">([is-even?
+</span><span style="color:#abb2bf;">          (λ (x)
+</span><span style="color:#abb2bf;">            (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(zero? x) </span><span style="color:#db9d63;">#t</span><span style="color:#abb2bf;"> (is-odd? (sub1 x))))]
+</span><span style="color:#abb2bf;">         [is-odd?
+</span><span style="color:#abb2bf;">          (λ (x)
+</span><span style="color:#abb2bf;">            (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(zero? x) </span><span style="color:#db9d63;">#f</span><span style="color:#abb2bf;"> (is-even? (sub1 x))))])
+</span><span style="color:#abb2bf;">  (is-even? </span><span style="color:#db9d63;">6</span><span style="color:#abb2bf;">))
+</span></code></pre>
+
+
+
+        
+    </div>
+
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                
+                
+                    
+                    tagged
+                    
+                        <a href="https://racket-raccoon.github.io/tags/let/">let</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/letrec/">letrec</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/default-arguments/">default arguments</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/mutual-recursion/">mutual recursion</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/trace/">trace</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+
+    <!-- optional scripts -->
+      
+    <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+     
+<!-- MathJax script for rendering LaTeX math equations -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+      displayMath: [
+        ["$$", "$$"],
+        ["\\[", "\\]"],
+      ],
+    },
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+ 
+<script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+ 
+  </body>
+</html>
