@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Racket Raccoon - dsl</title>
+    <subtitle>It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://racket-raccoon.github.io/tags/dsl/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-02-01T00:00:00+00:00</updated>
+    <id>https://racket-raccoon.github.io/tags/dsl/atom.xml</id>
+    <entry xml:lang="en">
+        <title>When DSLs Shine: Processing JSON in Racket and Beyond</title>
+        <published>2025-02-01T00:00:00+00:00</published>
+        <updated>2025-02-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/json-dsl/"/>
+        <id>https://racket-raccoon.github.io/json-dsl/</id>
+        
+        <summary type="html">&lt;p&gt;What started as a simple fitness data export turned into a perfect illustration of why domain-specific languages can be so powerful.
+A brief journey from Racket to jsonquerylang.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>

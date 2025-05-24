@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Racket Raccoon</title>
+    <subtitle>It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://racket-raccoon.github.io/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-05-23T00:00:00+00:00</updated>
+    <id>https://racket-raccoon.github.io/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Leetcode #844: Backspace String Compare</title>
+        <published>2025-05-23T00:00:00+00:00</published>
+        <updated>2025-05-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/leetcode-backspace-string/"/>
+        <id>https://racket-raccoon.github.io/leetcode-backspace-string/</id>
+        
+        <summary type="html">&lt;p&gt;I&#x27;m gonna try to trick my brain into doing some leetcode challenges over the course of this year, so let&#x27;s start with something simple like &lt;a href=&quot;https:&#x2F;&#x2F;leetcode.com&#x2F;problems&#x2F;backspace-string-compare&#x2F;description&#x2F;&quot;&gt;&quot;Backspace String Compare&quot;&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Ultimate Scheme and Racket podcast guide</title>
+        <published>2025-03-02T00:00:00+00:00</published>
+        <updated>2025-03-02T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/podcasts/"/>
+        <id>https://racket-raccoon.github.io/podcasts/</id>
+        
+        <summary type="html">&lt;p&gt;Dive into the lore of Scheme and Racket with these awesome podcast episodes – where coding stories and functional wisdom come to life.
+I&#x27;ve hand-picked each one to create the ultimate listening guide for Lisp enthusiasts.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>When DSLs Shine: Processing JSON in Racket and Beyond</title>
+        <published>2025-02-01T00:00:00+00:00</published>
+        <updated>2025-02-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/json-dsl/"/>
+        <id>https://racket-raccoon.github.io/json-dsl/</id>
+        
+        <summary type="html">&lt;p&gt;What started as a simple fitness data export turned into a perfect illustration of why domain-specific languages can be so powerful.
+A brief journey from Racket to jsonquerylang.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Named Let and Mutual Recursion</title>
+        <published>2025-01-19T00:00:00+00:00</published>
+        <updated>2025-01-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/named-let/"/>
+        <id>https://racket-raccoon.github.io/named-let/</id>
+        
+        <summary type="html">&lt;p&gt;A quick introduction to the &lt;em&gt;named&lt;&#x2F;em&gt; &lt;code&gt;let&lt;&#x2F;code&gt;, why you might want to use &lt;code&gt;letrec&lt;&#x2F;code&gt;, and what &lt;em&gt;&quot;mutually recursive functions&quot;&lt;&#x2F;em&gt; are. To learn more about the &lt;code&gt;let&lt;&#x2F;code&gt; family, consult &lt;a href=&quot;https:&#x2F;&#x2F;docs.racket-lang.org&#x2F;guide&#x2F;let.html&quot; title=&quot;let&quot;&gt;The Racket Guide&lt;&#x2F;a&gt; and &lt;a href=&quot;https:&#x2F;&#x2F;docs.racket-lang.org&#x2F;reference&#x2F;let.html&quot;&gt;The Racket Reference&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Threading and Function Composition</title>
+        <published>2025-01-15T00:00:00+00:00</published>
+        <updated>2025-01-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/threading/"/>
+        <id>https://racket-raccoon.github.io/threading/</id>
+        
+        <summary type="html">&lt;p&gt;One of the features I started using extensively this year is a threading macro. Also, I wanted to give an honorable mention to some higher-order functions we have out of the box from Racket.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Memoization: A Primer</title>
+        <published>2025-01-10T00:00:00+00:00</published>
+        <updated>2025-01-10T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/memoization/"/>
+        <id>https://racket-raccoon.github.io/memoization/</id>
+        
+        <summary type="html">&lt;p&gt;Anyways, &lt;em&gt;function memoization&lt;&#x2F;em&gt;, amiright? &quot;Top-down&quot; dynamic programming. Before attempting to calculate the function result for a particular set of parameters, we look up the table first to avoid doing the same work twice.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Yet another dev blog? Oh no</title>
+        <published>2025-01-01T00:00:00+00:00</published>
+        <updated>2025-01-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/but-why/"/>
+        <id>https://racket-raccoon.github.io/but-why/</id>
+        
+        <summary type="html">&lt;p&gt;In your first post, you&#x27;re expected to uncover the motivation behind this whole project and justify its very existence. I&#x27;ll give it a try — but I won&#x27;t try too hard, that&#x27;s for sure.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>

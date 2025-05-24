@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+     
+    <meta name="description" content="It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!" />
+     
+
+    <title>
+    
+    Memoization: A Primer
+    
+</title>
+
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+     
+    <link
+      rel="stylesheet"
+      href="https://racket-raccoon.github.io/site.css"
+    />
+      
+  </head>
+
+  <body class="hack dark main container">
+    
+    
+         
+    <header class="nav-header">
+
+        <a href="/" style="all: unset; cursor: pointer;">
+          <img
+            src="/images/avatar.png"
+            alt="Raccoon - Racket programming language mascot"
+            style="width: 60px; height: auto; border-radius: 50%;"
+          />
+        </a>
+<!--        
+      <nav
+        itemscope
+        itemtype="http://schema.org/SiteNavigationElement"
+        class="navbar"
+      >
+        <div class="nav-links">
+          
+          <a
+            itemprop="url"
+            class=""
+            href="https://racket-raccoon.github.io/tags"
+          >
+            <span itemprop="name">Tags</span></a
+          >
+          
+        </div>
+      </nav>
+-->
+      <div class="user-actions-container">
+        
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="search-results">
+          <div class="search-results__items"></div>
+        </div>
+         
+        <a
+          id="dark-mode-toggle"
+          onclick="toggleTheme(); event.preventDefault();"
+          href="#"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/sun.svg"
+            id="sun-icon"
+            style="filter: invert(1)"
+            alt="Light mode"
+          />
+          <img
+            src="https://racket-raccoon.github.io/icons/moon.svg"
+            id="moon-icon"
+            alt="Dark mode"
+          />
+        </a>
+         
+        <a
+          href="https://racket-raccoon.github.io/atom.xml"
+          class="feed-icon"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/rss.svg"
+            id="rss-icon"
+            alt="RSS feed"
+            class="social-icon"
+          />
+        </a>
+         
+      </div>
+
+      
+      <!-- Set the correct theme in the script -->
+      <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script>
+        setTheme(getSavedTheme());
+      </script>
+      
+    </header>
+     
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Memoization: A Primer</h1>
+        <span class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>2 minute read</span>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2025-01-10
+</span>
+    </header>
+
+    <div itemprop="articleBody">
+        
+            <p>Anyways, <em>function memoization</em>, amiright? "Top-down" dynamic programming. Before attempting to calculate the function result for a particular set of parameters, we look up the table first to avoid doing the same work twice.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>Super useful in many situations, especially when we want to speed up an intuitive but inefficient recursive solution without re-writing it into an iterative "bottom-up" one. A quick google shows that there are a couple of libraries that can do the heavy lifting for us, e.g., the <a href="https://docs.racket-lang.org/memo/index.html" title="memo">memo</a> package. Here is an example provided in the docs:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">require </span><span style="color:#abb2bf;">memo)
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(define/memoize (fib n)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&lt; n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">      </span><span style="color:#db9d63;">1
+</span><span style="color:#abb2bf;">      (+ (fib (sub1 n)) (fib (- n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">)))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(fib </span><span style="color:#db9d63;">100</span><span style="color:#abb2bf;">)  </span><span style="font-style:italic;color:#5f697a;">; 573147844013817084101
+</span></code></pre>
+<p>That should work fine for most situations; however, <code>define/memoize</code> by default uses <code>eq?</code> instead of <code>equal?</code> to compare cache keys, which might become an unpleasant surprise for you.</p>
+<blockquote>
+<p>This package provides macros for defining memoized functions. A memoized function stores its results in a <strong>hasheq table</strong>.</p>
+</blockquote>
+<blockquote>
+<p>The hash procedure creates a table where keys are compared with equal?, hashalw creates a table where keys are compared with equal-always?, <strong>hasheq procedure creates a table where keys are compared with eq?</strong>, hasheqv procedure creates a table where keys are compared with eqv?.</p>
+</blockquote>
+<p>This is not the end of the world, of course. As the documentation says, the <code>#:hash</code> parameter specifies a hash table to use for the memoized data, and accessing the cache is done by calling the function without any arguments. Here is a quick demo:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(define/memoize (display/test s)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">displayln </span><span style="color:#abb2bf;">s))
+</span><span style="color:#abb2bf;">...
+</span><span style="color:#abb2bf;">&gt; (display/test </span><span style="color:#9acc76;">&quot;groot&quot;</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">groot
+</span><span style="color:#abb2bf;">&gt; (display/test (string </span><span style="color:#db9d63;">#\g #\r #\o #\o #\t</span><span style="color:#abb2bf;">))
+</span><span style="color:#abb2bf;">groot
+</span><span style="color:#abb2bf;">&gt; (display/test)
+</span><span style="color:#abb2bf;">&#39;#&amp;#hasheq((</span><span style="color:#9acc76;">&quot;groot&quot;</span><span style="color:#abb2bf;"> . #&lt;void&gt;) (</span><span style="color:#9acc76;">&quot;groot&quot;</span><span style="color:#abb2bf;"> . #&lt;void&gt;))
+</span></code></pre>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(define/memoize (display/test s) #:hash hash
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">displayln </span><span style="color:#abb2bf;">s))
+</span><span style="color:#abb2bf;">...
+</span><span style="color:#abb2bf;">&gt; (display/test </span><span style="color:#9acc76;">&quot;groot&quot;</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">groot
+</span><span style="color:#abb2bf;">&gt; (display/test (string </span><span style="color:#db9d63;">#\g #\r #\o #\o #\t</span><span style="color:#abb2bf;">))
+</span><span style="color:#abb2bf;">&gt; (display/test)
+</span><span style="color:#abb2bf;">&#39;#&amp;#hash((</span><span style="color:#9acc76;">&quot;groot&quot;</span><span style="color:#abb2bf;"> . #&lt;void&gt;))
+</span></code></pre>
+<p>Just to have another tool in your Racket toolbox, here is how to write the simplest memoizer from scratch. Following the implementation given in <a href="https://nostarch.com/racket-programming-fun-way" title="Racket Programming the Fun Way">"Racket Programming the Fun Way"</a>, we would write something like this:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">fib
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([h (make-hash)])
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">fib </span><span style="color:#abb2bf;">n)
+</span><span style="color:#abb2bf;">      (</span><span style="color:#cd74e8;">cond
+</span><span style="color:#abb2bf;">        [(&lt; n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">) </span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">]
+</span><span style="color:#abb2bf;">        [(hash-has-key? h n) (hash-ref h n)]
+</span><span style="color:#abb2bf;">        [else
+</span><span style="color:#abb2bf;">         (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([f (+ (fib (sub1 n)) (fib (- n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">)))])
+</span><span style="color:#abb2bf;">           (hash-set! h n f)
+</span><span style="color:#abb2bf;">           f)]))
+</span><span style="color:#abb2bf;">    fib))
+</span></code></pre>
+<p>That's a neat way of creating a closure. First, we always check for the base case, then we look up the table and return early if the result is already there. Otherwise, we perform the computation and save the value into the table. The only annoying thing here (probably coming from my C++ background) is the classic double lookup pitfall, one of the reasons why <code>std::map</code> didn't even have a <code>contains</code> method until C++20. Not sure what would be the cleanest way to avoid double lookup in this case, but I opt for something like this:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">fib
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([h (make-hash)])
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">fib </span><span style="color:#abb2bf;">n)
+</span><span style="color:#abb2bf;">      (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&lt; n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">          </span><span style="color:#db9d63;">1
+</span><span style="color:#abb2bf;">          (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([cached (hash-ref h n &#39;miss)])
+</span><span style="color:#abb2bf;">            (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(eq? cached &#39;miss)
+</span><span style="color:#abb2bf;">                (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([f (+ (fib (sub1 n)) (fib (- n </span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">)))])
+</span><span style="color:#abb2bf;">                  (hash-set! h n f) f)
+</span><span style="color:#abb2bf;">                cached))))
+</span><span style="color:#abb2bf;">    fib))
+</span></code></pre>
+
+
+
+        
+    </div>
+
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                
+                
+                    
+                    tagged
+                    
+                        <a href="https://racket-raccoon.github.io/tags/memoization/">Memoization</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/cache/">Cache</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/double-lookup/">Double lookup</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+
+    <!-- optional scripts -->
+      
+    <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+     
+<!-- MathJax script for rendering LaTeX math equations -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+      displayMath: [
+        ["$$", "$$"],
+        ["\\[", "\\]"],
+      ],
+    },
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+ 
+<script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+ 
+  </body>
+</html>

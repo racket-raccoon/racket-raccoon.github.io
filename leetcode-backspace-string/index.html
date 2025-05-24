@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+     
+    <meta name="description" content="It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!" />
+     
+
+    <title>
+    
+    Leetcode #844: Backspace String Compare
+    
+</title>
+
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+     
+    <link
+      rel="stylesheet"
+      href="https://racket-raccoon.github.io/site.css"
+    />
+      
+  </head>
+
+  <body class="hack dark main container">
+    
+    
+         
+    <header class="nav-header">
+
+        <a href="/" style="all: unset; cursor: pointer;">
+          <img
+            src="/images/avatar.png"
+            alt="Raccoon - Racket programming language mascot"
+            style="width: 60px; height: auto; border-radius: 50%;"
+          />
+        </a>
+<!--        
+      <nav
+        itemscope
+        itemtype="http://schema.org/SiteNavigationElement"
+        class="navbar"
+      >
+        <div class="nav-links">
+          
+          <a
+            itemprop="url"
+            class=""
+            href="https://racket-raccoon.github.io/tags"
+          >
+            <span itemprop="name">Tags</span></a
+          >
+          
+        </div>
+      </nav>
+-->
+      <div class="user-actions-container">
+        
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="search-results">
+          <div class="search-results__items"></div>
+        </div>
+         
+        <a
+          id="dark-mode-toggle"
+          onclick="toggleTheme(); event.preventDefault();"
+          href="#"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/sun.svg"
+            id="sun-icon"
+            style="filter: invert(1)"
+            alt="Light mode"
+          />
+          <img
+            src="https://racket-raccoon.github.io/icons/moon.svg"
+            id="moon-icon"
+            alt="Dark mode"
+          />
+        </a>
+         
+        <a
+          href="https://racket-raccoon.github.io/atom.xml"
+          class="feed-icon"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/rss.svg"
+            id="rss-icon"
+            alt="RSS feed"
+            class="social-icon"
+          />
+        </a>
+         
+      </div>
+
+      
+      <!-- Set the correct theme in the script -->
+      <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script>
+        setTheme(getSavedTheme());
+      </script>
+      
+    </header>
+     
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Leetcode #844: Backspace String Compare</h1>
+        <span class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2025-05-23
+</span>
+    </header>
+
+    <div itemprop="articleBody">
+        
+            <p>I'm gonna try to trick my brain into doing some leetcode challenges over the course of this year, so let's start with something simple like <a href="https://leetcode.com/problems/backspace-string-compare/description/">"Backspace String Compare"</a>.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>First thing that comes to mind is to build two normalised strings separately and then just compare those with <code>equal?</code>.
+Every non-backspace character is pushed into a stack-like buffer and for every <code>#</code> we pop one of those out - clean and simple.</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">build </span><span style="color:#abb2bf;">str)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">loop ([lst (string-&gt;list str)] [result &#39;()])
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">cond
+</span><span style="color:#abb2bf;">      [(null? lst) result]
+</span><span style="color:#abb2bf;">      [(char=? (car lst) #\#)
+</span><span style="color:#abb2bf;">       (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(null? result)
+</span><span style="color:#abb2bf;">           (loop (cdr lst) result)
+</span><span style="color:#abb2bf;">           (loop (cdr lst) (cdr result)))]
+</span><span style="color:#abb2bf;">      [else (loop (cdr lst) (cons (car lst) result))])))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">backspace-compare </span><span style="color:#abb2bf;">s t)
+</span><span style="color:#abb2bf;">  (equal? (build s) (build t)))
+</span></code></pre>
+<p>Unfortunately, we can't call it a day yet; now we have to talk about complexity, and I always have a hard time analysing those.
+Time-wise, we have to iterate over both strings once to build their normalised representation.
+Meaning, if the size of <code>s</code> is <code>A</code> and the size of <code>t</code> is <code>B</code>, then we'll have to go through <code>A + B</code> elements just to build those.
+<code>equal?</code> is basically a loop that is going to iterate through the resulting strings: worst-case scenario would be if <code>(length (build s)) == A</code> and <code>(length (build t)) == B</code>, meaning that iteration goes up to <code>(min A B)</code>.
+Probably worth noting that we could speed up this check by keeping track of the stack buffer size e.g. increment on push and decrement on pop.
+This way we could compare their sizes and fail fast if they aren't the same; doesn't affect the worst-case scenario so doesn't change our complexity analysis.</p>
+<p>That means that time complexity would be either <code>O(2A+B)</code> or <code>O(A+2B)</code>, smart people would just wave their hands and say that it's the same as <code>O(A+B)</code> as <code>2A</code> is linearly proportional to <code>A</code> so we don't really care about constant multipliers.
+We can even simply say that it's <code>O(N)</code> implying <code>N = A + B</code> as a good generalisation.</p>
+<p>Obviously, this challenge is all about space complexity so let's estimate it: we allocate two additional lists to store normalised strings.
+Making the same point about the worst-case scenario and string sizes, it's clear that space complexity is <code>O(A+B)</code> or <code>O(N)</code> and it can be improved upon.</p>
+<p>We would like to avoid creating those buffers altogether, pursuing space complexity of <code>O(1)</code>, and apparently the trick is to iterate the strings in reverse.
+Going from right to left, we need two pointers to iterate both strings in parallel.
+I'm gonna use those little closures to achieve that:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">next </span><span style="color:#abb2bf;">str)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">it (sub1 (string-length str)))
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">lambda </span><span style="color:#abb2bf;">()
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">loop ([skips </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">])
+</span><span style="color:#abb2bf;">      (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(negative? it)
+</span><span style="color:#abb2bf;">        &#39;end
+</span><span style="color:#abb2bf;">        (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">([ch (string-ref str it)])
+</span><span style="color:#abb2bf;">          (</span><span style="color:#cd74e8;">set! </span><span style="color:#abb2bf;">it (sub1 it))
+</span><span style="color:#abb2bf;">          (</span><span style="color:#cd74e8;">cond
+</span><span style="color:#abb2bf;">            [(char=? ch #\#) (loop (add1 skips))]
+</span><span style="color:#abb2bf;">            [(zero? skips) ch]
+</span><span style="color:#abb2bf;">            [else (loop (sub1 skips))]))))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">backspace-compare </span><span style="color:#abb2bf;">s t)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">next-s (next s))
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">next-t (next t))
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">let </span><span style="color:#abb2bf;">loop []
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">match </span><span style="color:#abb2bf;">(list (next-s) (next-t))
+</span><span style="color:#abb2bf;">      [(list &#39;end &#39;end) </span><span style="color:#db9d63;">#t</span><span style="color:#abb2bf;">]
+</span><span style="color:#abb2bf;">      [(</span><span style="color:#cd74e8;">or </span><span style="color:#abb2bf;">(list &#39;end _) (list _ &#39;end)) </span><span style="color:#db9d63;">#f</span><span style="color:#abb2bf;">]
+</span><span style="color:#abb2bf;">      [(list a a) (loop)]
+</span><span style="color:#abb2bf;">      [else </span><span style="color:#db9d63;">#f</span><span style="color:#abb2bf;">])))
+</span></code></pre>
+<p>Every time we meet <code>#</code> we have to increment the <code>skips</code> count and we can only return the next character if <code>skips</code> count is zero.
+Not only do we avoid allocating unnecessary buffers, but we also fail fast as iteration stops as soon as we find a difference between those sequences.</p>
+<p>I foolishly used <code>null</code> instead of <code>'end</code> when I wrote it first and fell head on into a trap related to the way <code>match</code> works.
+Matching a two-element list against <code>(list null null)</code> apparently might not perform as you would expect and both Claude and ChatGPT initially don't seem to be aware of that either.
+You should think about <code>null</code> in Racket as a regular identifier like <code>(define null '())</code> rather than some magic <em>literal</em>.
+Here is how ChatGPT describes it if you turn on the "deep research" mode for the request "evaluate this racket expression <code>(match (list #\p #\p) [(list null null) #t] [else #f])</code>":</p>
+<blockquote>
+<p>Since the first pattern matches (list #\p #\p), the overall expression returns #t. In summary, (match (list #\p #\p) [(list null null) #t] [else #f]) evaluates to #t because null in the pattern is a wildcard variable (not the empty-list), and the two characters are equal so the match succeeds</p>
+</blockquote>
+<p>Very last point I wanted to make is related to functions like <code>next</code> that have an internal state and return the next value in a sequence every time you call them.
+There is a nice convenience function <code>in-producer</code> that creates a wrapper around such functions and allows you to iterate through those sequences with a regular <code>for</code> loop.
+Here is an example of how you could write an adapter for the <code>next</code> function to make it return a list straight away - very similar to what the <code>build</code> function did for us:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">build </span><span style="color:#abb2bf;">str)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">for/list </span><span style="color:#abb2bf;">([ch (in-producer (next str) &#39;end)]) ch))
+</span></code></pre>
+
+
+
+        
+    </div>
+
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                
+                
+                    
+                    tagged
+                    
+                        <a href="https://racket-raccoon.github.io/tags/leetcode/">leetcode</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/strings/">strings</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/stack/">stack</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+
+    <!-- optional scripts -->
+      
+    <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+     
+<!-- MathJax script for rendering LaTeX math equations -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+      displayMath: [
+        ["$$", "$$"],
+        ["\\[", "\\]"],
+      ],
+    },
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+ 
+<script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+ 
+  </body>
+</html>

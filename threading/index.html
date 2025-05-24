@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+     
+    <meta name="description" content="It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!" />
+     
+
+    <title>
+    
+    Threading and Function Composition
+    
+</title>
+
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+     
+    <link
+      rel="stylesheet"
+      href="https://racket-raccoon.github.io/site.css"
+    />
+      
+  </head>
+
+  <body class="hack dark main container">
+    
+    
+         
+    <header class="nav-header">
+
+        <a href="/" style="all: unset; cursor: pointer;">
+          <img
+            src="/images/avatar.png"
+            alt="Raccoon - Racket programming language mascot"
+            style="width: 60px; height: auto; border-radius: 50%;"
+          />
+        </a>
+<!--        
+      <nav
+        itemscope
+        itemtype="http://schema.org/SiteNavigationElement"
+        class="navbar"
+      >
+        <div class="nav-links">
+          
+          <a
+            itemprop="url"
+            class=""
+            href="https://racket-raccoon.github.io/tags"
+          >
+            <span itemprop="name">Tags</span></a
+          >
+          
+        </div>
+      </nav>
+-->
+      <div class="user-actions-container">
+        
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="search-results">
+          <div class="search-results__items"></div>
+        </div>
+         
+        <a
+          id="dark-mode-toggle"
+          onclick="toggleTheme(); event.preventDefault();"
+          href="#"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/sun.svg"
+            id="sun-icon"
+            style="filter: invert(1)"
+            alt="Light mode"
+          />
+          <img
+            src="https://racket-raccoon.github.io/icons/moon.svg"
+            id="moon-icon"
+            alt="Dark mode"
+          />
+        </a>
+         
+        <a
+          href="https://racket-raccoon.github.io/atom.xml"
+          class="feed-icon"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/rss.svg"
+            id="rss-icon"
+            alt="RSS feed"
+            class="social-icon"
+          />
+        </a>
+         
+      </div>
+
+      
+      <!-- Set the correct theme in the script -->
+      <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script>
+        setTheme(getSavedTheme());
+      </script>
+      
+    </header>
+     
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Threading and Function Composition</h1>
+        <span class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2025-01-15
+</span>
+    </header>
+
+    <div itemprop="articleBody">
+        
+            <p>One of the features I started using extensively this year is a threading macro. Also, I wanted to give an honorable mention to some higher-order functions we have out of the box from Racket.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<blockquote>
+<p><strong><em>NOTE</em></strong> The word "thread" in this context means passing a value through a pipeline of functions and has nothing to do with concurrent threads of execution.</p>
+</blockquote>
+<h2 id="tldr-it-s-just-syntactic-sugar-to-flatten-nested-function-calls-for-readability-with-this-macro-you-can-rewrite-add1-exact-floor-log-num-10-as-num-log-10-exact-floor-add1">TLDR; It's just syntactic sugar to flatten nested function calls for readability. With this macro, you can rewrite <code>(add1 (exact-floor (log num 10)))</code> as <code>(~&gt; num (log 10) exact-floor add1)</code>.</h2>
+<p>I first bumped into this concept while doing some <a href="https://clojure.org/guides/threading_macros" title="clojure threading">Clojure</a> coding challenges on <a href="https://exercism.org/" title="exercism">Exercism</a>. Those macros are part of the core Clojure language, so you don't need to install any libraries. In Racket, unfortunately, you have to install the <a href="https://docs.racket-lang.org/threading/index.html" title="threading-lib">threading-lib</a> package first, e.g. <code>raco pkg install threading</code>. That actually was one of the reasons why I hadn't used it for a long time, just tried to avoid third-party packages as much as possible.</p>
+<p>First of all, the package documentation is extremely well written, so please just <a href="https://docs.racket-lang.org/threading/introduction.html" title="docs">check it out</a>. Here is one more quick example to give you a taste of it. In functional programming, we often push our data through a pipeline of functions, transforming it step-by-step to get the desired result. Here is one of the countless ways to transform a string into its acronym; comments show the state of the data at every pipeline stage going left to right:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">require </span><span style="color:#abb2bf;">threading)
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">acronym </span><span style="color:#abb2bf;">str)
+</span><span style="color:#abb2bf;">  (~&gt; str                           </span><span style="font-style:italic;color:#5f697a;">; &quot;Complementary metal-oxide semiconductor&quot;
+</span><span style="color:#abb2bf;">      string-upcase                 </span><span style="font-style:italic;color:#5f697a;">; &quot;COMPLEMENTARY METAL-OXIDE SEMICONDUCTOR&quot;
+</span><span style="color:#abb2bf;">      (string-split #px</span><span style="color:#9acc76;">&quot;[\\s_-]+&quot;</span><span style="color:#abb2bf;">)  </span><span style="font-style:italic;color:#5f697a;">; &#39;(&quot;COMPLEMENTARY&quot; &quot;METAL&quot; &quot;OXIDE&quot; &quot;SEMICONDUCTOR&quot;)
+</span><span style="color:#abb2bf;">      (map (curryr string-ref </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">) _) </span><span style="font-style:italic;color:#5f697a;">; &#39;(#\C #\M #\O #\S)
+</span><span style="color:#abb2bf;">      list-&gt;string))                </span><span style="font-style:italic;color:#5f697a;">; &quot;CMOS&quot;
+</span></code></pre>
+<p>Now let's take a step back and talk about some tools Racket gives us out of the box to combine functions together. The function provided in TLDR uses some <a href="https://www.youtube.com/watch?v=uESjbE1jUxo" title="explained">arithmetic operations</a> to calculate the number of digits in a given number. We could use <code>compose</code> or <code>compose1</code> functions here to combine those building blocks together. Let's note some of the differences between those two approaches:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">digits.v1 (compose1 add1 exact-floor (curryr log </span><span style="color:#db9d63;">10</span><span style="color:#abb2bf;">)))
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">digits.v2 (λ~&gt; (log </span><span style="color:#db9d63;">10</span><span style="color:#abb2bf;">) exact-floor add1))
+</span></code></pre>
+<p>Not only does <code>compose</code> apply those functions in reverse order, but we also had to use <code>curryr</code> to provide an adapter for the <code>log</code> function - if you're unfamiliar using <code>curryr</code> here is basically equivalent to <code>(λ (x) (log x 10))</code>. The threading macro will always try to plug the value into the first parameter hole but also provides that magic <code>_</code> that allows you to specify where to put it, as we did in the line <code>(map (curryr string-ref 0) _) ; '(#\C #\M #\O #\S)</code> of our acronym example. <code>λ~&gt;</code> or <code>lambda~&gt;</code> here demonstrates how we can obtain a function that represents the pipeline to pass it into another higher-order function, e.g. <code>map</code> or <code>filter</code>.</p>
+<p>A lot of those functions could save you from writing yet another lambda or currying a function. I want to finish this text by mentioning a couple of <a href="https://docs.racket-lang.org/reference/procedures.html#%28part._.Additional_.Higher-.Order_.Functions%29">functions</a> provided by <code>racket/function</code> and <code>racket</code> but not <code>racket/base</code>. Let's give an honorable mention to the <code>identity</code> function, which is surprisingly useful for a function that just returns back whatever you passed in. Here is a simplified example from SICP - functions <code>sum-cubes</code> and <code>sum-integers</code> are implemented in terms of a higher-order <code>sum</code> function:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">sum </span><span style="color:#abb2bf;">term a b)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(&gt; a b)
+</span><span style="color:#abb2bf;">      </span><span style="color:#db9d63;">0
+</span><span style="color:#abb2bf;">      (+ (term a)
+</span><span style="color:#abb2bf;">         (sum term (add1 a) b))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">sum-cubes </span><span style="color:#abb2bf;">a b)
+</span><span style="color:#abb2bf;">  (sum (curryr expt </span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">) a b))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">sum-integers </span><span style="color:#abb2bf;">a b)
+</span><span style="color:#abb2bf;">  (sum identity a b))
+</span></code></pre>
+<p>As a bonus, <code>identity</code> could be used to filter/count all the non-#f elements of the list:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(filter identity &#39;(</span><span style="color:#db9d63;">#t</span><span style="color:#abb2bf;"> &#39;foo </span><span style="color:#db9d63;">#f</span><span style="color:#abb2bf;"> #f </span><span style="color:#db9d63;">42 #f</span><span style="color:#abb2bf;"> #f </span><span style="color:#9acc76;">&quot;bar&quot;</span><span style="color:#abb2bf;">)) </span><span style="font-style:italic;color:#5f697a;">; &#39;(#t &#39;foo 42 &quot;bar&quot;)
+</span></code></pre>
+<p>Sometimes we need to combine predicates in place during filtering - <code>conjoin</code>, <code>disjoin</code>, and <code>negate</code> are for the rescue. We can express "give me a function that checks if a given value satisfies ALL of those predicates" as <code>(conjoin pred1? pred2? pred3?)</code>. Similarly, you can ask if a value satisfies AT LEAST one of the given predicates with <code>(disjoin pred1? pred2? pred3?)</code>. In this example, we have a two-dimensional grid map like in a classic rogue, <code>#\.</code> is a walkable floor tile while <code>#\#</code> is a wall that blocks the way. Combining <code>in-bounds?</code> and <code>is-wall?</code> together with <code>conjoin</code> and <code>negate</code> allows us to get a list of all available steps from a given tile.</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">N </span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">
+</span><span style="font-style:italic;color:#5f697a;">;; dungeon map with size N x N
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">A (vector #( #\# #\# #\# )
+</span><span style="color:#abb2bf;">                  #( </span><span style="color:#db9d63;">#\. #\. #\.</span><span style="color:#abb2bf;"> )
+</span><span style="color:#abb2bf;">                  #( #\# #\# #\# )))
+</span><span style="color:#abb2bf;">
+</span><span style="font-style:italic;color:#5f697a;">;; access cell at (cons row col)
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">at </span><span style="color:#abb2bf;">posn)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">match-define </span><span style="color:#abb2bf;">(cons i j) posn)
+</span><span style="color:#abb2bf;">  (vector-ref (vector-ref A i) j))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">in-bounds? </span><span style="color:#abb2bf;">posn)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">match-define </span><span style="color:#abb2bf;">(cons i j) posn)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">and </span><span style="color:#abb2bf;">(&gt;= i </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">) (&gt;= j </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">) (&lt; i N) (&lt; j N)))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">is-wall? </span><span style="color:#abb2bf;">posn)
+</span><span style="color:#abb2bf;">  (char=? (at posn) #\#))
+</span><span style="color:#abb2bf;">
+</span><span style="font-style:italic;color:#5f697a;">;; list of steps from current cell
+</span><span style="font-style:italic;color:#5f697a;">;; one step in each direction
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define</span><span style="color:#abb2bf;"> (</span><span style="color:#5cb3fa;">wasd </span><span style="color:#abb2bf;">from)
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">match-define </span><span style="color:#abb2bf;">(cons i j) from)
+</span><span style="color:#abb2bf;">  (list (cons (sub1 i) j)       </span><span style="font-style:italic;color:#5f697a;">; up
+</span><span style="color:#abb2bf;">        (cons (add1 i) j)       </span><span style="font-style:italic;color:#5f697a;">; down
+</span><span style="color:#abb2bf;">        (cons i (sub1 j))       </span><span style="font-style:italic;color:#5f697a;">; left
+</span><span style="color:#abb2bf;">        (cons i (add1 j))))     </span><span style="font-style:italic;color:#5f697a;">; right
+</span><span style="color:#abb2bf;">
+</span><span style="font-style:italic;color:#5f697a;">;; list all the available steps from cell (1 . 0)
+</span><span style="font-style:italic;color:#5f697a;">;; you can&#39;t move through the walls or leave the map
+</span><span style="color:#abb2bf;">(filter (conjoin in-bounds? (negate is-wall?)) (wasd (cons </span><span style="color:#db9d63;">1 0</span><span style="color:#abb2bf;">)))
+</span><span style="font-style:italic;color:#5f697a;">; with the same result as
+</span><span style="color:#abb2bf;">(~&gt; (cons </span><span style="color:#db9d63;">1 0</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">    wasd
+</span><span style="color:#abb2bf;">    (filter in-bounds? _)
+</span><span style="color:#abb2bf;">    (filter-not is-wall? _))
+</span></code></pre>
+
+
+
+        
+    </div>
+
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                
+                
+                    
+                    tagged
+                    
+                        <a href="https://racket-raccoon.github.io/tags/threading/">threading</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/procedures/">Procedures</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/clojure/">Clojure</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+
+    <!-- optional scripts -->
+      
+    <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+     
+<!-- MathJax script for rendering LaTeX math equations -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+      displayMath: [
+        ["$$", "$$"],
+        ["\\[", "\\]"],
+      ],
+    },
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+ 
+<script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+ 
+  </body>
+</html>

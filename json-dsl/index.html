@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+     
+    <meta name="description" content="It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!" />
+     
+
+    <title>
+    
+    When DSLs Shine: Processing JSON in Racket and Beyond
+    
+</title>
+
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+     
+    <link
+      rel="stylesheet"
+      href="https://racket-raccoon.github.io/site.css"
+    />
+      
+  </head>
+
+  <body class="hack dark main container">
+    
+    
+         
+    <header class="nav-header">
+
+        <a href="/" style="all: unset; cursor: pointer;">
+          <img
+            src="/images/avatar.png"
+            alt="Raccoon - Racket programming language mascot"
+            style="width: 60px; height: auto; border-radius: 50%;"
+          />
+        </a>
+<!--        
+      <nav
+        itemscope
+        itemtype="http://schema.org/SiteNavigationElement"
+        class="navbar"
+      >
+        <div class="nav-links">
+          
+          <a
+            itemprop="url"
+            class=""
+            href="https://racket-raccoon.github.io/tags"
+          >
+            <span itemprop="name">Tags</span></a
+          >
+          
+        </div>
+      </nav>
+-->
+      <div class="user-actions-container">
+        
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <div class="search-results">
+          <div class="search-results__items"></div>
+        </div>
+         
+        <a
+          id="dark-mode-toggle"
+          onclick="toggleTheme(); event.preventDefault();"
+          href="#"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/sun.svg"
+            id="sun-icon"
+            style="filter: invert(1)"
+            alt="Light mode"
+          />
+          <img
+            src="https://racket-raccoon.github.io/icons/moon.svg"
+            id="moon-icon"
+            alt="Dark mode"
+          />
+        </a>
+         
+        <a
+          href="https://racket-raccoon.github.io/atom.xml"
+          class="feed-icon"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://racket-raccoon.github.io/icons/rss.svg"
+            id="rss-icon"
+            alt="RSS feed"
+            class="social-icon"
+          />
+        </a>
+         
+      </div>
+
+      
+      <!-- Set the correct theme in the script -->
+      <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script>
+        setTheme(getSavedTheme());
+      </script>
+      
+    </header>
+     
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">When DSLs Shine: Processing JSON in Racket and Beyond</h1>
+        <span class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>3 minute read</span>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2025-02-01
+</span>
+    </header>
+
+    <div itemprop="articleBody">
+        
+            <p>What started as a simple fitness data export turned into a perfect illustration of why domain-specific languages can be so powerful.
+A brief journey from Racket to jsonquerylang.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>Recently, I needed to extract my step data collected by my watch from the Garmin website and put it into a spreadsheet.
+I decided this would be a good opportunity to solve the problem with a little Racket script.</p>
+<p>Fortunately, the web developer tools in my browser were able to extract the step data in JSON format.</p>
+<p>The file format looks something like this:</p>
+<pre data-lang="json" style="background-color:#2b303b;color:#6c7079;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    </span><span style="color:#9acc76;">&quot;values&quot;</span><span style="color:#abb2bf;">:
+</span><span style="color:#abb2bf;">    [
+</span><span style="color:#abb2bf;">        {
+</span><span style="color:#abb2bf;">            </span><span style="color:#9acc76;">&quot;calendarDate&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#9acc76;">&quot;2024-12-31&quot;</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">            </span><span style="color:#9acc76;">&quot;values&quot;</span><span style="color:#abb2bf;">:{
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;stepGoal&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">8000</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;totalSteps&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">9688</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;totalDistance&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">7847
+</span><span style="color:#abb2bf;">            }
+</span><span style="color:#abb2bf;">        },
+</span><span style="color:#abb2bf;">        {
+</span><span style="color:#abb2bf;">            </span><span style="color:#9acc76;">&quot;calendarDate&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#9acc76;">&quot;2025-01-01&quot;</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">            </span><span style="color:#9acc76;">&quot;values&quot;</span><span style="color:#abb2bf;">:{
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;stepGoal&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">8000</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;totalSteps&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">8150</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">                </span><span style="color:#9acc76;">&quot;totalDistance&quot;</span><span style="color:#abb2bf;">:</span><span style="color:#db9d63;">6914
+</span><span style="color:#abb2bf;">            }
+</span><span style="color:#abb2bf;">        }
+</span><span style="color:#abb2bf;">    ]
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>I only needed dates and step counts, and I was specifically interested in dates starting from January 14.
+While the entries appeared to be sorted already, I decided to apply sorting just to be safe.
+After processing, I wanted to save the steps into a CSV file that could be easily imported by any spreadsheet software.</p>
+<p>My first attempt looked something like this:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">#lang racket
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">require </span><span style="color:#abb2bf;">json)
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">array
+</span><span style="color:#abb2bf;">  (hash-ref
+</span><span style="color:#abb2bf;">   (call-with-input-file </span><span style="color:#9acc76;">&quot;steps.json&quot;
+</span><span style="color:#abb2bf;">     (λ (in) (read-json in)))
+</span><span style="color:#abb2bf;">   &#39;values))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">date-&gt;steps
+</span><span style="color:#abb2bf;">  (</span><span style="color:#cd74e8;">for/list </span><span style="color:#abb2bf;">([val array])
+</span><span style="color:#abb2bf;">    (cons (hash-ref val &#39;calendarDate)
+</span><span style="color:#abb2bf;">          (hash-ref (hash-ref val &#39;values) &#39;totalSteps))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">define </span><span style="color:#abb2bf;">data
+</span><span style="color:#abb2bf;">  (sort
+</span><span style="color:#abb2bf;">   (filter (λ (rec) (string&gt;=? (car rec) </span><span style="color:#9acc76;">&quot;2025-01-14&quot;</span><span style="color:#abb2bf;">)) date-&gt;steps)
+</span><span style="color:#abb2bf;">   (λ (lhs rhs) (string&lt;? (car lhs) (car rhs)))))
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">(call-with-output-file </span><span style="color:#9acc76;">&quot;steps.csv&quot;
+</span><span style="color:#abb2bf;">  #:exists &#39;replace
+</span><span style="color:#abb2bf;">  (λ (out)
+</span><span style="color:#abb2bf;">    (</span><span style="color:#cd74e8;">display </span><span style="color:#abb2bf;">(string-join (map number-&gt;string (map cdr data)) </span><span style="color:#9acc76;">&quot;,&quot;</span><span style="color:#abb2bf;">) out)))
+</span></code></pre>
+<p>Using <code>call-with-input-file</code> and <code>call-with-output-file</code> instead of working with file ports directly helps us to close those ports automatically as soon as we're done with our I/O operations.
+The <code>read-json</code> function is defined in the <code>json</code> <a href="https://docs.racket-lang.org/json/index.html" title="docs">library</a>, which is part of the <code>base</code> package and available out of the box.</p>
+<p>The parsed output looks like this:</p>
+<pre data-lang="Racket" style="background-color:#2b303b;color:#6c7079;" class="language-Racket "><code class="language-Racket" data-lang="Racket"><span style="color:#abb2bf;">&#39;#hasheq((values
+</span><span style="color:#abb2bf;">          .
+</span><span style="color:#abb2bf;">          (#hasheq((calendarDate . </span><span style="color:#9acc76;">&quot;2024-12-31&quot;</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                   (values
+</span><span style="color:#abb2bf;">                    .
+</span><span style="color:#abb2bf;">                    #hasheq((stepGoal . </span><span style="color:#db9d63;">8000</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                            (totalDistance . </span><span style="color:#db9d63;">7847</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                            (totalSteps . </span><span style="color:#db9d63;">9688</span><span style="color:#abb2bf;">))))
+</span><span style="color:#abb2bf;">           #hasheq((calendarDate . </span><span style="color:#9acc76;">&quot;2025-01-01&quot;</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                   (values
+</span><span style="color:#abb2bf;">                    .
+</span><span style="color:#abb2bf;">                    #hasheq((stepGoal . </span><span style="color:#db9d63;">8000</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                            (totalDistance . </span><span style="color:#db9d63;">6914</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">                            (totalSteps . </span><span style="color:#db9d63;">8150</span><span style="color:#abb2bf;">)))))))
+</span></code></pre>
+<p>A JSON object is represented with <code>hasheq</code> using symbols as keys, while a JSON array becomes a list.
+Fortunately, the dates are formatted as <em>YYYY-MM-DD</em>, meaning that regular lexicographical sorting will also maintain chronological order.
+Finally, we form a comma-separated string and write it to a file using the <code>display</code> function.
+The <code>#:exists</code> flag specifies how to handle situations when the output file already exists.
+By default, an exception would be thrown, so it's easier to just silently override the file each time.</p>
+<p>I was working on this small exercise while hanging out on <a href="https://www.twitch.tv/janetacarr/" title="Janet Carr">Janet's stream</a> (amazing Clojure developer) when someone in the chat mentioned <a href="https://jsonquerylang.org/" title="playground">jsonquerylang</a> - a very cute and impressive DSL for JSON processing.
+And what's a Racket blog without a DSL discussion? Just look at how cleanly the exact same idea can be expressed in this language:</p>
+<pre style="background-color:#2b303b;color:#6c7079;"><code><span style="color:#abb2bf;">.values
+</span><span style="color:#abb2bf;">  | pick(.calendarDate, .values.totalSteps)
+</span><span style="color:#abb2bf;">  | filter(.calendarDate &gt;= &quot;2025-01-14&quot;)
+</span><span style="color:#abb2bf;">  | sort(.calendarDate)
+</span><span style="color:#abb2bf;">  | map(.totalSteps)
+</span><span style="color:#abb2bf;">  | join(&quot;,&quot;)
+</span></code></pre>
+<p>There's a live playground at <a href="https://jsonquerylang.org/" title="playground">https://jsonquerylang.org/</a> where you can simply paste your JSON into the "Input" text area and edit the query line by line, seeing the query result updated live in the output field.
+You can tell how well this small language is designed by how quickly I was able to write this query without any prior experience, guided only by examples and quick reference.</p>
+<p>This example perfectly illustrates how powerful domain-specific languages can be as tools - it's a perfect illustration of the phrase "right tool for the job".
+A good DSL provides you with the right mental model and the right "angle of attack" for the problem you're trying to solve.</p>
+
+
+
+        
+    </div>
+
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                
+                
+                    
+                    tagged
+                    
+                        <a href="https://racket-raccoon.github.io/tags/json/">json</a>
+                        
+                            
+                                
+                                    ,
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/dsl/">dsl</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://racket-raccoon.github.io/tags/i-o/">I&#x2F;O</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+
+    <!-- optional scripts -->
+      
+    <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+     
+<!-- MathJax script for rendering LaTeX math equations -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+      displayMath: [
+        ["$$", "$$"],
+        ["\\[", "\\]"],
+      ],
+    },
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+ 
+<script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+<script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+ 
+  </body>
+</html>
