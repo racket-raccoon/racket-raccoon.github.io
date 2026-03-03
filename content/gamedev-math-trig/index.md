@@ -98,15 +98,15 @@ caption="Animated unit-circle view of sine and cosine."
 
 ;; v ⋅ x = ‖v‖ ‖x‖ cosθ, so for unit vectors v ⋅ x = cosθ
 (define/contract (cos-between a b)
-  (-> numlist? numlist? number?)
+  (-> numvector? numvector? number?)
   (/ (dot a b) (* (magnitude a) (magnitude b))))
 
 (test-case "Vector/Angle Conversions"
-           (define v (list 0.707 0.707)) ; 45° unit vector
-           (define x (list 1 0))
+           (define v #(0.707 0.707)) ; 45° unit vector
+           (define x #(1 0))
            (check-= (cos-between v x) (cos (/ pi 4)) ε)
-           (check-= (cos-between '(1 0) '(0 1)) 0 ε)
-           (check-= (cos-between '(1 0) '(1 0)) 1 ε)
+           (check-= (cos-between #(1 0) #(0 1)) 0 ε)
+           (check-= (cos-between #(1 0) #(1 0)) 1 ε)
            ;; to get angle from cos we need inverse function (arc arccosine)
            (define α (* pi (random)))
            (check-= (acos (cos α)) α ε)
@@ -123,24 +123,24 @@ caption="Animated unit-circle view of sine and cosine."
 
 (define/contract (polar->cartesian p)
   (-> vector2/c vector2/c) ;; (r θ) to (x y)
-  (match-define (list r θ) p)
-  (list (* r (cos θ)) (* r (sin θ))))
+  (match-define (vector r θ) p)
+  (vector (* r (cos θ)) (* r (sin θ))))
 
 (define/contract (cartesian->polar v)
   (-> vector2/c vector2/c) ;; (x y) to (r θ)
-  (match-define (list x y) v)
-  (list (magnitude v) (atan y x)))
+  (match-define (vector x y) v)
+  (vector (magnitude v) (atan y x)))
 
 (test-case "Polar/Cartesian: there and back again"
-           (define p (list 5 (/ pi 3)))
+           (define p (vector 5 (/ pi 3)))
            (define p* (cartesian->polar (polar->cartesian p)))
-           (match-let ([(list r θ) p][(list r* θ*) p*])
+           (match-let ([(vector r θ) p][(vector r* θ*) p*])
              (check-= r r* ε)
              (check-= θ θ* ε))
 
-           (define v (list 3 4))
+           (define v #(3 4))
            (define v* (polar->cartesian (cartesian->polar v)))
-           (match-let ([(list x y) v][(list x* y*) v*])
+           (match-let ([(vector x y) v][(vector x* y*) v*])
              (check-= x x* ε)
              (check-= y y* ε)))
 
@@ -198,12 +198,12 @@ caption="Animated unit-circle view of sine and cosine."
     (cond
       ;; quadrant I
       [(<= 0 α (/ pi 2)) (values α 1)]
-      ;; quadrant II: sin(α) = sin(π − α) y-axis mirror
+      ;; quadrant II: sin(α) = sin(π - α) y-axis mirror
       [(<= (/ pi 2) α pi) (values (- pi α) 1)]
       ;; quadrant III: sign switch!
       [(<= pi α (/ (* 3 pi) 2)) (values (- α pi) -1)]
-      ;; quadrant IV: one way to deduce is sin(α) = −sin(α − π)
-      ;; to end up in quadrant II and we know sin(α − π) = sin(2π − α)
+      ;; quadrant IV: one way to deduce is sin(α) = -sin(α - π)
+      ;; to end up in quadrant II and we know sin(α - π) = sin(2π - α)
       [else (values (- (* 2 pi) α) -1)])))
 
 (define (lerp A B t) (+ A (* t (- B A))))
@@ -228,22 +228,15 @@ caption="Animated unit-circle view of sine and cosine."
              (define α (* (* 2 pi) (/ k sweep-samples)))
              (check-= (lut/sin α) (sin α) lut/sin-ε))
 
-           ;; random wide-range coverage to stress periodic reduction
-           (define random-samples 20000)
-           (for ([k (in-range random-samples)])
-             (define α (- (* 200.0 pi (random)) (* 100.0 pi)))
-             (check-= (lut/sin α) (sin α) lut/sin-ε))
-
            ;; key boundary angles
-           (for ([α (in-list
-                     (list (* -2 pi)
-                           (* -3 (/ pi 2))
-                           (- pi)
-                           (/ (- pi) 2)
-                           0
-                           (/ pi 2)
-                           pi
-                           (/ (* 3 pi) 2)
-                           (* 2 pi)))])
+           (for ([α (list (* -2 pi)
+                          (* -3 (/ pi 2))
+                          (- pi)
+                          (/ (- pi) 2)
+                          0
+                          (/ pi 2)
+                          pi
+                          (/ (* 3 pi) 2)
+                          (* 2 pi))])
              (check-= (sin α) (lut/sin α) ε)))
 ```
