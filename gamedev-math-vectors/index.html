@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+        <meta property="og:description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+        <meta property="twitter:description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Math for Gamedev 101: Vectors
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-vectors&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Math for Gamedev 101: Vectors" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-vectors&#x2F;"
+    />
+    <meta name="twitter:title" content="Math for Gamedev 101: Vectors" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming -->
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://racket-raccoon.github.io/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Math for Gamedev 101: Vectors</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>1 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-01-25
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>Recently I bought <a rel="external" href="https://simondev.io/about">Simon's</a> course on <a rel="external" href="https://simondev.io/lessons/math">Math for Game Developers</a> and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on <a rel="external" href="https://en.wikipedia.org/wiki/Euclidean_vector">Euclidean vectors</a>.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span><pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span style="color: #FF8F40;">#lang</span><span> racket</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> rackunit)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Euclidean space is the mathematical formalization of the &quot;flat&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; geometry we learned in school where for example:</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; * parallel lines never meet</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; * angles in triangle sum to 180°</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; * Pythagorean theorem holds.. etc</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Cartesian coordinate system is the standard way to represent</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Euclidean space numerically using perpendicular axes x y z</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; to define positions in space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Simple &quot;number line&quot; is way to represent a one-dimensional Euclidean space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Point / Position / Position Vector in gamedev all denote the same idea:</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; representation of a specific location in the virtual space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector = Magnitude (length or size) + Direction</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Points are written with just letters; Vectors have a little arrow on top</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Numerically they are represented exactly the same but mean different things</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Point vs Vector&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; thermometer example: one-dimensional space</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> current</span><span style="color: #D2A6FF;"> 5</span><span>)</span><span style="color: #5A6673;font-style: italic;">  ; current temperature (point, initial state)</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> forecast</span><span style="color: #D2A6FF;"> 2</span><span>)</span><span style="color: #5A6673;font-style: italic;"> ; &quot;2 degrees warmer&quot; change (vector)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;;; point + vector = point (also point - vector = point)</span></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">+</span><span> current forecast)</span><span style="color: #D2A6FF;"> 7</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> A</span><span style="color: #D2A6FF;"> 10</span><span>)</span><span style="color: #5A6673;font-style: italic;"> ; temperature now (point)</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> B</span><span style="color: #D2A6FF;"> 15</span><span>)</span><span style="color: #5A6673;font-style: italic;"> ; temperature later (point)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;;; point - point = vector</span></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">-</span><span> B A)</span><span style="color: #D2A6FF;"> 5</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;;; (point + point) doesn&#39;t make much sense</span></span>
+<span class="giallo-l"><span>           )</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Two vectors are considered equal</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; if they have the same magnitude and direction = if their coordinates are equal</span></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Equality&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> a</span><span> #(</span><span style="color: #D2A6FF;">1 2 3</span><span>))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> b</span><span> #(</span><span style="color: #D2A6FF;">1 2 3</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? a b))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; contracts from now on should help to distinguish</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; points/vectors (numvector?) from scalars (number?)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; those are more strict contracts for two- and three-dimensional vectors</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">numvector?</span><span style="color: #D2A6FF;"> v</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">and</span><span> (</span><span style="color: #F07178;">vector?</span><span> v)</span></span>
+<span class="giallo-l"><span>       (</span><span style="color: #F07178;">for/and</span><span> ([x (</span><span style="color: #F07178;">in-vector</span><span> v)]) (</span><span style="color: #F07178;">number?</span><span> x))))</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> vector2/c</span><span> (</span><span style="color: #F07178;">vector/c number? number?</span><span>))</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> vector3/c</span><span> (</span><span style="color: #F07178;">vector/c number? number? number?</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; To add the vectors we add the corresponding components from each vector</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (add a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector? numvector?)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector-map +</span><span> a b))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (sub a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector? numvector?)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector-map -</span><span> a b))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Addition and subtraction&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> a</span><span> #(</span><span style="color: #D2A6FF;">1 2 3</span><span>))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> b</span><span> #(</span><span style="color: #D2A6FF;">1 2 3</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (add a b) #(</span><span style="color: #D2A6FF;">2 4 6</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (sub a b) #(</span><span style="color: #D2A6FF;">0 0 0</span><span>)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">random-vector3</span><span>) (</span><span style="color: #F07178;">vector</span><span> (</span><span style="color: #F07178;">random</span><span style="color: #D2A6FF;"> 10</span><span>) (</span><span style="color: #F07178;">random</span><span style="color: #D2A6FF;"> 10</span><span>) (</span><span style="color: #F07178;">random</span><span style="color: #D2A6FF;"> 10</span><span>)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; (a + b) + c = a + (b + c) </span></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Associativity&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> a</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> b</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> c</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (check-equal? (add (add a b) c) (add a (add b c))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; a + b = b + a </span></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Commutativity&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> a</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> b</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (check-equal? (add a b) (add b a)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector subtraction is neither associative nor commutative!</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector length with Pythagorean theorem</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector&#39;s v magnitude is denoted as ‖v‖</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (</span><span style="color: #F07178;">magnitude</span><span> v)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector?</span><span style="color: #F07178;"> number?</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">sqrt</span><span> (</span><span style="color: #F07178;">for/fold</span><span> ([acc</span><span style="color: #D2A6FF;"> 0</span><span>]) ([x (</span><span style="color: #F07178;">in-vector</span><span> v)]) (</span><span style="color: #F07178;">+</span><span> acc (</span><span style="color: #F07178;">*</span><span> x x)))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Here &#39;from&#39; and &#39;to&#39; are not vectors but points!</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (distance from to)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector?</span><span style="color: #F07178;"> number?</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">magnitude</span><span> (sub to from)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Distance&quot;</span></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">magnitude</span><span> #(</span><span style="color: #D2A6FF;">2 0</span><span>))</span><span style="color: #D2A6FF;"> 2</span><span>)</span></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">magnitude</span><span> #(</span><span style="color: #D2A6FF;">0 3</span><span>))</span><span style="color: #D2A6FF;"> 3</span><span>)</span></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">magnitude</span><span> #(</span><span style="color: #D2A6FF;">3 4</span><span>))</span><span style="color: #D2A6FF;"> 5</span><span>)</span></span>
+<span class="giallo-l"><span>           </span></span>
+<span class="giallo-l"><span>           (check-equal? (distance #(</span><span style="color: #D2A6FF;">3 4</span><span>) #(</span><span style="color: #D2A6FF;">0 0</span><span>))</span><span style="color: #D2A6FF;"> 5</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>           (check-equal? (</span><span style="color: #F07178;">magnitude</span><span> #(</span><span style="color: #D2A6FF;">3 4 12</span><span>))</span><span style="color: #D2A6FF;"> 13</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Scalar multiplication of vector V and scalar S written as SV</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (scale v s)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector?</span><span style="color: #F07178;"> number?</span><span> numvector?)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector-map</span><span> (</span><span style="color: #F07178;">curry *</span><span> s) v))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Hadamard Product, written as a ∘ b</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; just an element-wise multiplication</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; could be used for non-uniform scale!</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (hadamard a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector? numvector?)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector-map *</span><span> a b))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Both scale functions (scalar and component-wise) are</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Commutative and associative - order doesn&#39;t matter</span></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Vector scaling&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; multiplying with a scalar changes magnitude, same direction</span></span>
+<span class="giallo-l"><span>           (check-equal? (scale #(</span><span style="color: #D2A6FF;">3 4</span><span>)</span><span style="color: #D2A6FF;"> 4</span><span>) #(</span><span style="color: #D2A6FF;">12 16</span><span>))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; negative scalar reverses direction </span></span>
+<span class="giallo-l"><span>           (check-equal? (scale #(</span><span style="color: #D2A6FF;">1 2</span><span>)</span><span style="color: #D2A6FF;"> -1.5</span><span>) #(</span><span style="color: #D2A6FF;">-1.5 -3.0</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; RGB color can be represented as three-dimensional vector!</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; Hadamard Product could be used to tint color by other color</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #F07178;">define/contract</span><span> (tint-red color)</span></span>
+<span class="giallo-l"><span>             (</span><span style="color: #F07178;">-&gt;</span><span> vector3/c vector3/c)</span></span>
+<span class="giallo-l"><span>             (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> red-mask</span><span> #(</span><span style="color: #D2A6FF;">1 0 0</span><span>))</span></span>
+<span class="giallo-l"><span>             (hadamard color red-mask))</span></span>
+<span class="giallo-l"><span>           </span></span>
+<span class="giallo-l"><span>           (check-equal? (scale #(</span><span style="color: #D2A6FF;">1 2 3</span><span>)</span><span style="color: #D2A6FF;"> 5</span><span>) #(</span><span style="color: #D2A6FF;">5 10 15</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>           (check-equal? (hadamard #(</span><span style="color: #D2A6FF;">3 4</span><span>) #(</span><span style="color: #D2A6FF;">1 0</span><span>)) #(</span><span style="color: #D2A6FF;">3 0</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (hadamard #(</span><span style="color: #D2A6FF;">5 6</span><span>) #(</span><span style="color: #D2A6FF;">5 5</span><span>)) #(</span><span style="color: #D2A6FF;">25 30</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (hadamard #(</span><span style="color: #D2A6FF;">1 2 3</span><span>) #(</span><span style="color: #D2A6FF;">1 -1 1</span><span>)) #(</span><span style="color: #D2A6FF;">1 -2 3</span><span>)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Unit vector is any vector with a length of one, indicates direction</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; denoted by a lowercase letter with a circumflex or &quot;hat&quot; ^</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector can be normalized or divided by its length to create a unit vector</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (normalize v)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector?)</span></span>
+<span class="giallo-l"><span>  (scale v (</span><span style="color: #F07178;">/</span><span style="color: #D2A6FF;"> 1</span><span> (</span><span style="color: #F07178;">magnitude</span><span> v))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Normalized Vectors&quot;</span></span>
+<span class="giallo-l"><span>           (check-equal? (normalize #(</span><span style="color: #D2A6FF;">3 4</span><span>)) #(</span><span style="color: #D2A6FF;">3/5 4/5</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (normalize #(</span><span style="color: #D2A6FF;">0.75 0.25</span><span>)) (normalize #(</span><span style="color: #D2A6FF;">3 1</span><span>))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Dot Product, Scalar projection, Scalar product</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; also ‖a‖ ‖b‖ cosθ where θ is an angle between a and b</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; if both normalized gives us a way to say how similar vectors are</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (dot a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector?</span><span style="color: #F07178;"> number?</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for/fold</span><span> ([acc</span><span style="color: #D2A6FF;"> 0</span><span>]) ([x (</span><span style="color: #F07178;">in-vector</span><span> a)] [y (</span><span style="color: #F07178;">in-vector</span><span> b)]) (</span><span style="color: #F07178;">+</span><span> acc (</span><span style="color: #F07178;">*</span><span> x y))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Dot Product&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; Orthogonal! Perpendicular to each other, θ = π/2, cosθ = 0</span></span>
+<span class="giallo-l"><span>           (check-equal? (dot #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">0 1</span><span>))</span><span style="color: #D2A6FF;"> 0</span><span>)</span></span>
+<span class="giallo-l"><span>           (check-equal? (dot #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">0 -1</span><span>))</span><span style="color: #D2A6FF;"> 0</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; Opposite direction</span></span>
+<span class="giallo-l"><span>           (check-equal? (dot #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">-1 0</span><span>))</span><span style="color: #D2A6FF;"> -1</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; Same direction</span></span>
+<span class="giallo-l"><span>           (check-equal? (dot #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">1 0</span><span>))</span><span style="color: #D2A6FF;"> 1</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; dot product of a vector with itself is equal to</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; the square of the magnitude</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> a</span><span> (random-vector3))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> ε</span><span style="color: #D2A6FF;"> 1e-12</span><span>)</span></span>
+<span class="giallo-l"><span>           (check-= (dot a a) (</span><span style="color: #F07178;">expt</span><span> (</span><span style="color: #F07178;">magnitude</span><span> a)</span><span style="color: #D2A6FF;"> 2</span><span>) ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Vector (a x b) is perpendicular to both a and b and the plane formed by them</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Its magnitude represents the area of the parallelogram spanned by a and b</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (cross a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> vector3/c vector3/c vector3/c)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">match-let</span><span> ([(</span><span style="color: #F07178;">vector</span><span> ax ay az) a]</span></span>
+<span class="giallo-l"><span>              [(</span><span style="color: #F07178;">vector</span><span> bx by bz) b])</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">vector</span><span> (</span><span style="color: #F07178;">-</span><span> (</span><span style="color: #F07178;">*</span><span> ay bz) (</span><span style="color: #F07178;">*</span><span> az by))</span></span>
+<span class="giallo-l"><span>            (</span><span style="color: #F07178;">-</span><span> (</span><span style="color: #F07178;">*</span><span> az bx) (</span><span style="color: #F07178;">*</span><span> ax bz))</span></span>
+<span class="giallo-l"><span>            (</span><span style="color: #F07178;">-</span><span> (</span><span style="color: #F07178;">*</span><span> ax by) (</span><span style="color: #F07178;">*</span><span> ay bx)))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Cross product&quot;</span></span>
+<span class="giallo-l"><span>           (check-equal? (cross #(</span><span style="color: #D2A6FF;">1 0 0</span><span>) #(</span><span style="color: #D2A6FF;">0 1 0</span><span>)) #(</span><span style="color: #D2A6FF;">0 0 1</span><span>))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; Order matters! Changing order reverses the direction</span></span>
+<span class="giallo-l"><span>           (check-equal? (cross #(</span><span style="color: #D2A6FF;">0 1 0</span><span>) #(</span><span style="color: #D2A6FF;">1 0 0</span><span>)) #(</span><span style="color: #D2A6FF;">0 0 -1</span><span>))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; For parallel vectors a x b results in the zero vector</span></span>
+<span class="giallo-l"><span>           (check-equal? (cross #(</span><span style="color: #D2A6FF;">1 1 1</span><span>) #(</span><span style="color: #D2A6FF;">2 2 2</span><span>)) #(</span><span style="color: #D2A6FF;">0 0 0</span><span>))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; If either a or b are zero vector, a x b is also zero vector</span></span>
+<span class="giallo-l"><span>           (check-equal? (cross #(</span><span style="color: #D2A6FF;">1 2 3</span><span>) #(</span><span style="color: #D2A6FF;">0 0 0</span><span>)) #(</span><span style="color: #D2A6FF;">0 0 0</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-equal? (cross #(</span><span style="color: #D2A6FF;">0 0 0</span><span>) #(</span><span style="color: #D2A6FF;">1 2 3</span><span>)) #(</span><span style="color: #D2A6FF;">0 0 0</span><span>)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">provide</span><span> numvector? vector2/c vector3/c</span><span style="color: #F07178;"> magnitude</span><span> dot)</span></span></code></pre>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/math/">math</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/gamedev/">gamedev</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

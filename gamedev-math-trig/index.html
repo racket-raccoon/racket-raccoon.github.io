@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="This is part two of the &quot;Math for Gamedev 101&quot; series. You can read part one here: Math for Gamedev 101: Vectors.
+As before, these are my notes from Simon&#x27;s course on Math for Game Developers.
+This part is dedicated to basic trigonometry.
+The first GIF is from the Wikipedia article on radians, and the second one was generated with ImageMagick from this Racket snippet." />
+        <meta property="og:description" content="This is part two of the &quot;Math for Gamedev 101&quot; series. You can read part one here: Math for Gamedev 101: Vectors.
+As before, these are my notes from Simon&#x27;s course on Math for Game Developers.
+This part is dedicated to basic trigonometry.
+The first GIF is from the Wikipedia article on radians, and the second one was generated with ImageMagick from this Racket snippet." />
+        <meta property="twitter:description" content="This is part two of the &quot;Math for Gamedev 101&quot; series. You can read part one here: Math for Gamedev 101: Vectors.
+As before, these are my notes from Simon&#x27;s course on Math for Game Developers.
+This part is dedicated to basic trigonometry.
+The first GIF is from the Wikipedia article on radians, and the second one was generated with ImageMagick from this Racket snippet." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Math for Gamedev 101: Trigonometry
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-trig&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Math for Gamedev 101: Trigonometry" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-trig&#x2F;"
+    />
+    <meta name="twitter:title" content="Math for Gamedev 101: Trigonometry" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming -->
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://racket-raccoon.github.io/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Math for Gamedev 101: Trigonometry</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>1 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-02-08
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>This is part two of the "Math for Gamedev 101" series. You can read part one here: <a href="/gamedev-math-vectors/">Math for Gamedev 101: Vectors</a>.
+As before, these are my notes from <a rel="external" href="https://simondev.io/about">Simon's</a> course on <a rel="external" href="https://simondev.io/lessons/math">Math for Game Developers</a>.
+This part is dedicated to basic trigonometry.
+The first GIF is from the Wikipedia article on <a rel="external" href="https://en.wikipedia.org/wiki/Radian">radians</a>, and the second one was generated with ImageMagick from this Racket <a rel="external" href="https://gist.github.com/racket-raccoon/e280564959b28606cfee4451b268649e">snippet</a>.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span><section
+  style="width: 100%; max-width: 100%; margin: 0 auto; text-align: center;">
+  <img src="assets/circle-radians.gif"  alt="Circle radians diagram" 
+    style="max-width: 100%; height: auto; display: inline-block;">
+  
+  <caption style="margin-top: 0.5em;">
+    <p style="font-style: italic;">A radian is the angle subtended by an arc equal to the radius.</p>
+  </caption>
+  
+</section>
+<section
+  style="width: 100%; max-width: 100%; margin: 0 auto; text-align: center;">
+  <img src="assets/unit-circle-trig-visualizer.gif"  alt="Unit circle trigonometry visualizer" 
+    style="max-width: 100%; height: auto; display: inline-block;">
+  
+  <caption style="margin-top: 0.5em;">
+    <p style="font-style: italic;">Animated unit-circle view of sine and cosine.</p>
+  </caption>
+  
+</section>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span style="color: #FF8F40;">#lang</span><span> racket</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> rackunit</span><span style="color: #AAD94C;"> &quot;vectors.rkt&quot;</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Radians, like degrees, are units of angular measure</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; less &quot;intuitive&quot; than degrees, but used in many areas of mathematics</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; one rad = 180/π° ≈ 57.3°, full circle is 2π rad</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; An arc of a circle with the same length as the radius</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; of that circle subtends an angle of 1 radian</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Proportions are  180° == π rad</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">; note: shadowing standard racket functions</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">degrees-&gt;radians</span><span style="color: #D2A6FF;"> x</span><span>) (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">* pi</span><span> x)</span><span style="color: #D2A6FF;"> 180.0</span><span>))</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">radians-&gt;degrees</span><span style="color: #D2A6FF;"> x</span><span>) (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 180.0</span><span> x)</span><span style="color: #F07178;"> pi</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> ε</span><span style="color: #D2A6FF;"> 1e-12</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Degrees and Radians&quot;</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">degrees-&gt;radians</span><span style="color: #D2A6FF;"> 90</span><span>) (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>) ε)</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">degrees-&gt;radians</span><span style="color: #D2A6FF;"> 45</span><span>) (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 4</span><span>) ε)</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">radians-&gt;degrees pi</span><span>)</span><span style="color: #D2A6FF;"> 180</span><span> ε)</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">radians-&gt;degrees</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 3</span><span>))</span><span style="color: #D2A6FF;"> 60</span><span> ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;         angle θ</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |\</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            | \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |  \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |   \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |    \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |     \  &lt; hypotenuse</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; adjacent &gt; |      \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |       \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |        \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |         \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |_         \</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;            |_|_________\</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;                   ^</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;;                opposite</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">sin/cos/tan</span><span style="color: #D2A6FF;"> adj opp</span><span> [</span><span style="color: #D2A6FF;">hyp 1</span><span>])</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">values</span></span>
+<span class="giallo-l"><span>   (</span><span style="color: #F07178;">/</span><span> opp hyp)</span><span style="color: #5A6673;font-style: italic;">   ;; sin, for unit vector sin == opp</span></span>
+<span class="giallo-l"><span>   (</span><span style="color: #F07178;">/</span><span> adj hyp)</span><span style="color: #5A6673;font-style: italic;">   ;; cos, for unit vector cos == adj</span></span>
+<span class="giallo-l"><span>   (</span><span style="color: #F07178;">/</span><span> opp adj)))</span><span style="color: #5A6673;font-style: italic;"> ;; tan</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Note: there is a special 30°-60°-90° triangle - these angles are in the ratio 1 : 2 : 3.</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; A useful property of such triangles is that their side lengths are in the ratio 1 : √3 : 2.</span></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Basic Trigonometric Functions&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; For θ = 30°: opposite = 1, adjacent = √3, hypotenuse = 2.</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> θ</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 6</span><span>))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define-values</span><span> (</span><span style="color: #59C2FF;">s c t</span><span>) (sin/cos/tan (</span><span style="color: #F07178;">sqrt</span><span style="color: #D2A6FF;"> 3</span><span>)</span><span style="color: #D2A6FF;"> 1 2</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-= s (</span><span style="color: #F07178;">sin</span><span> θ) ε)</span></span>
+<span class="giallo-l"><span>           (check-= c (</span><span style="color: #F07178;">cos</span><span> θ) ε)</span></span>
+<span class="giallo-l"><span>           (check-= t (</span><span style="color: #F07178;">tan</span><span> θ) ε)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; sin and cos are the same curve</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; just offset π/2 from each other</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> α</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span> (</span><span style="color: #F07178;">random</span><span>)))</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">sin</span><span> α) (</span><span style="color: #F07178;">cos</span><span> (</span><span style="color: #F07178;">-</span><span> α (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>))) ε)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; tan is ratio of sine to cosine</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; closer to π/2 cos approaches 0 while tan approaches infinity</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">tan</span><span> α) (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">sin</span><span> α) (</span><span style="color: #F07178;">cos</span><span> α)) ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Cartesian coordinate system is the standard way to represent</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; a position in space using perpendicular axes (x y z)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Polar coordinate system specifies a given point in a plane</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; by using a distance and an angle as its two coordinates (r θ)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; v ⋅ x = ‖v‖ ‖x‖ cosθ, so for unit vectors v ⋅ x = cosθ</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (cos-between a b)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> numvector? numvector?</span><span style="color: #F07178;"> number?</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">/</span><span> (dot a b) (</span><span style="color: #F07178;">*</span><span> (</span><span style="color: #F07178;">magnitude</span><span> a) (</span><span style="color: #F07178;">magnitude</span><span> b))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Vector/Angle Conversions&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> v</span><span> #(</span><span style="color: #D2A6FF;">0.707 0.707</span><span>))</span><span style="color: #5A6673;font-style: italic;"> ; 45° unit vector</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> x</span><span> #(</span><span style="color: #D2A6FF;">1 0</span><span>))</span></span>
+<span class="giallo-l"><span>           (check-= (cos-between v x) (</span><span style="color: #F07178;">cos</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 4</span><span>)) ε)</span></span>
+<span class="giallo-l"><span>           (check-= (cos-between #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">0 1</span><span>))</span><span style="color: #D2A6FF;"> 0</span><span> ε)</span></span>
+<span class="giallo-l"><span>           (check-= (cos-between #(</span><span style="color: #D2A6FF;">1 0</span><span>) #(</span><span style="color: #D2A6FF;">1 0</span><span>))</span><span style="color: #D2A6FF;"> 1</span><span> ε)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; to get angle from cos we need inverse function (arc arccosine)</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> α</span><span> (</span><span style="color: #F07178;">* pi</span><span> (</span><span style="color: #F07178;">random</span><span>)))</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">acos</span><span> (</span><span style="color: #F07178;">cos</span><span> α)) α ε)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; however it only works for the particular range (or domain)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; because sin or cos are NOT one-to-one e.g.</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">cos</span><span> α) (</span><span style="color: #F07178;">cos</span><span> (</span><span style="color: #F07178;">-</span><span> α)) ε)</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">acos</span><span> (</span><span style="color: #F07178;">cos</span><span> (</span><span style="color: #F07178;">-</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span>) α))) α ε)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; for arccosine α should be within [0, π]</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; for arcsine (and arctangent) α should be within [-π/2, π/2]</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; to resolve this ambiguity atan2 function is provided</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; by most libraries, see usage example in cartesian-&gt;polar</span></span>
+<span class="giallo-l"><span>           )</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (polar-&gt;cartesian p)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> vector2/c vector2/c)</span><span style="color: #5A6673;font-style: italic;"> ;; (r θ) to (x y)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">match-define</span><span> (</span><span style="color: #F07178;">vector</span><span> r θ) p)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector</span><span> (</span><span style="color: #F07178;">*</span><span> r (</span><span style="color: #F07178;">cos</span><span> θ)) (</span><span style="color: #F07178;">*</span><span> r (</span><span style="color: #F07178;">sin</span><span> θ))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">define/contract</span><span> (cartesian-&gt;polar v)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">-&gt;</span><span> vector2/c vector2/c)</span><span style="color: #5A6673;font-style: italic;"> ;; (x y) to (r θ)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">match-define</span><span> (</span><span style="color: #F07178;">vector</span><span> x y) v)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector</span><span> (</span><span style="color: #F07178;">magnitude</span><span> v) (</span><span style="color: #F07178;">atan</span><span> y x)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Polar/Cartesian: there and back again&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> p</span><span> (</span><span style="color: #F07178;">vector</span><span style="color: #D2A6FF;"> 5</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 3</span><span>)))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> p*</span><span> (cartesian-&gt;polar (polar-&gt;cartesian p)))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #F07178;">match-let</span><span> ([(</span><span style="color: #F07178;">vector</span><span> r θ) p][(</span><span style="color: #F07178;">vector</span><span> r* θ*) p*])</span></span>
+<span class="giallo-l"><span>             (check-= r r* ε)</span></span>
+<span class="giallo-l"><span>             (check-= θ θ* ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> v</span><span> #(</span><span style="color: #D2A6FF;">3 4</span><span>))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> v*</span><span> (polar-&gt;cartesian (cartesian-&gt;polar v)))</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #F07178;">match-let</span><span> ([(</span><span style="color: #F07178;">vector</span><span> x y) v][(</span><span style="color: #F07178;">vector</span><span> x* y*) v*])</span></span>
+<span class="giallo-l"><span>             (check-= x x* ε)</span></span>
+<span class="giallo-l"><span>             (check-= y y* ε)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> math/number-theory)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; We very rarely need to implement trig functions ourselves but</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; if we have to there is always Polynomial Approximation.</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Here is an easy example with Taylor Series formula:</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">taylor/cos</span><span style="color: #D2A6FF;"> x</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for/fold</span><span> ([acc</span><span style="color: #D2A6FF;"> 1</span><span>])</span></span>
+<span class="giallo-l"><span>            ([i (</span><span style="color: #F07178;">sequence-filter even?</span><span> (</span><span style="color: #F07178;">in-naturals</span><span style="color: #D2A6FF;"> 2</span><span>))]</span></span>
+<span class="giallo-l"><span>             [f (</span><span style="color: #F07178;">in-cycle</span><span> (</span><span style="color: #F07178;">list - +</span><span>))]</span></span>
+<span class="giallo-l"><span style="color: #FF8F40;">             #:do</span><span> [(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> next</span><span> (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">expt</span><span> x i) (factorial i)))]</span></span>
+<span class="giallo-l"><span style="color: #FF8F40;">             #:break</span><span> (</span><span style="color: #F07178;">&lt;</span><span> next ε))</span></span>
+<span class="giallo-l"><span>    (f acc next)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">taylor/sin</span><span style="color: #D2A6FF;"> x</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for/fold</span><span> ([acc x])</span></span>
+<span class="giallo-l"><span>            ([i (</span><span style="color: #F07178;">sequence-filter odd?</span><span> (</span><span style="color: #F07178;">in-naturals</span><span style="color: #D2A6FF;"> 3</span><span>))]</span></span>
+<span class="giallo-l"><span>             [f (</span><span style="color: #F07178;">in-cycle</span><span> (</span><span style="color: #F07178;">list - +</span><span>))]</span></span>
+<span class="giallo-l"><span style="color: #FF8F40;">             #:do</span><span> [(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> next</span><span> (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">expt</span><span> x i) (factorial i)))]</span></span>
+<span class="giallo-l"><span style="color: #FF8F40;">             #:break</span><span> (</span><span style="color: #F07178;">&lt;</span><span> next ε))</span></span>
+<span class="giallo-l"><span>    (f acc next)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Polynomial Approximation with Taylor Series formula&quot;</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> α</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span> (</span><span style="color: #F07178;">random</span><span>)))</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">sin</span><span> α) (taylor/sin α) ε)</span></span>
+<span class="giallo-l"><span>           (check-= (</span><span style="color: #F07178;">cos</span><span> α) (taylor/cos α) ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> SIZE</span><span style="color: #D2A6FF;"> 16</span><span>)</span><span style="color: #5A6673;font-style: italic;"> ;; tiny lookup table</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> STEP</span><span> (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>) (</span><span style="color: #F07178;">sub1</span><span> SIZE)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; (define lut (for/vector ([i (in-range SIZE)]) (sin (* i STEP))))</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> lut</span><span> #(</span><span style="color: #D2A6FF;">0</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.10452846326765346</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.20791169081775931</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.3090169943749474</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.40673664307580015</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.49999999999999994</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.5877852522924731</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.6691306063588581</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.7431448254773941</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.8090169943749475</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.8660254037844386</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.9135454576426009</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.9510565162951535</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.9781476007338056</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              0.9945218953682733</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">              1.0</span><span>))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">fmod</span><span style="color: #D2A6FF;"> x y</span><span>) (</span><span style="color: #F07178;">-</span><span> x (</span><span style="color: #F07178;">*</span><span> y (</span><span style="color: #F07178;">floor</span><span> (</span><span style="color: #F07178;">/</span><span> x y)))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">map-to-sin-range</span><span style="color: #D2A6FF;"> α</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">let</span><span> ([α (fmod α (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span>))])</span><span style="color: #5A6673;font-style: italic;"> ; [0, 2π) wrap first</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">cond</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">      ;; quadrant I</span></span>
+<span class="giallo-l"><span>      [(</span><span style="color: #F07178;">&lt;=</span><span style="color: #D2A6FF;"> 0</span><span> α (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>)) (</span><span style="color: #F07178;">values</span><span> α</span><span style="color: #D2A6FF;"> 1</span><span>)]</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">      ;; quadrant II: sin(α) = sin(π - α) y-axis mirror</span></span>
+<span class="giallo-l"><span>      [(</span><span style="color: #F07178;">&lt;=</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>) α</span><span style="color: #F07178;"> pi</span><span>) (</span><span style="color: #F07178;">values</span><span> (</span><span style="color: #F07178;">- pi</span><span> α)</span><span style="color: #D2A6FF;"> 1</span><span>)]</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">      ;; quadrant III: sign switch!</span></span>
+<span class="giallo-l"><span>      [(</span><span style="color: #F07178;">&lt;= pi</span><span> α (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 3</span><span style="color: #F07178;"> pi</span><span>)</span><span style="color: #D2A6FF;"> 2</span><span>)) (</span><span style="color: #F07178;">values</span><span> (</span><span style="color: #F07178;">-</span><span> α</span><span style="color: #F07178;"> pi</span><span>)</span><span style="color: #D2A6FF;"> -1</span><span>)]</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">      ;; quadrant IV: one way to deduce is sin(α) = -sin(α - π)</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">      ;; to end up in quadrant II and we know sin(α - π) = sin(2π - α)</span></span>
+<span class="giallo-l"><span>      [</span><span style="color: #F07178;">else</span><span> (</span><span style="color: #F07178;">values</span><span> (</span><span style="color: #F07178;">-</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span>) α)</span><span style="color: #D2A6FF;"> -1</span><span>)])))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">lerp</span><span style="color: #D2A6FF;"> A B t</span><span>) (</span><span style="color: #F07178;">+</span><span> A (</span><span style="color: #F07178;">*</span><span> t (</span><span style="color: #F07178;">-</span><span> B A))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">lut/sin</span><span style="color: #D2A6FF;"> α</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">let-values</span><span> ([(α sign) (map-to-sin-range α)])</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> i</span><span> (</span><span style="color: #F07178;">/</span><span> α STEP))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">    ;; some clamping required to avoid lut out-of-bounds</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> i*</span><span> (</span><span style="color: #F07178;">max</span><span style="color: #D2A6FF;"> 0</span><span> (</span><span style="color: #F07178;">min</span><span> (</span><span style="color: #F07178;">sub1</span><span> SIZE) i)))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> i1</span><span> (</span><span style="color: #F07178;">exact-floor</span><span> i*))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> i2</span><span> (</span><span style="color: #F07178;">min</span><span> (</span><span style="color: #F07178;">sub1</span><span> SIZE) (</span><span style="color: #F07178;">add1</span><span> i1)))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> t</span><span> (</span><span style="color: #F07178;">-</span><span> i* i1))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">*</span><span> sign (lerp (</span><span style="color: #F07178;">vector-ref</span><span> lut i1) (</span><span style="color: #F07178;">vector-ref</span><span> lut i2) t))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; Linear interpolation with this table size has worst-case error ~= 0.00137</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> lut/sin-ε</span><span style="color: #D2A6FF;"> 0.0014</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(test-case</span><span style="color: #AAD94C;"> &quot;Lookup Table Approximation with Linear Interpolation&quot;</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; deterministic dense sweep over one full period [0, 2π]</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> sweep-samples</span><span style="color: #D2A6FF;"> 200000</span><span>)</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #F07178;">for</span><span> ([k (</span><span style="color: #F07178;">in-range</span><span> (</span><span style="color: #F07178;">add1</span><span> sweep-samples))])</span></span>
+<span class="giallo-l"><span>             (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> α</span><span> (</span><span style="color: #F07178;">*</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span>) (</span><span style="color: #F07178;">/</span><span> k sweep-samples)))</span></span>
+<span class="giallo-l"><span>             (check-= (lut/sin α) (</span><span style="color: #F07178;">sin</span><span> α) lut/sin-ε))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">           ;; key boundary angles</span></span>
+<span class="giallo-l"><span>           (</span><span style="color: #F07178;">for</span><span> ([α (</span><span style="color: #F07178;">list</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> -2</span><span style="color: #F07178;"> pi</span><span>)</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> -3</span><span> (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>))</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">- pi</span><span>)</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">- pi</span><span>)</span><span style="color: #D2A6FF;"> 2</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #D2A6FF;">                          0</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">/ pi</span><span style="color: #D2A6FF;"> 2</span><span>)</span></span>
+<span class="giallo-l"><span style="color: #F07178;">                          pi</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">/</span><span> (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 3</span><span style="color: #F07178;"> pi</span><span>)</span><span style="color: #D2A6FF;"> 2</span><span>)</span></span>
+<span class="giallo-l"><span>                          (</span><span style="color: #F07178;">*</span><span style="color: #D2A6FF;"> 2</span><span style="color: #F07178;"> pi</span><span>))])</span></span>
+<span class="giallo-l"><span>             (check-= (</span><span style="color: #F07178;">sin</span><span> α) (lut/sin α) ε)))</span></span></code></pre>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/math/">math</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/gamedev/">gamedev</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>
