@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="This is a small braindump on why you might want to use ebb&#x2F;threading as a drop-in replacement for threading-lib.
+Same familiar ~&amp;gt; shape, but with ebb&#x2F;forms it can avoid some intermediate list allocation." />
+        <meta property="og:description" content="This is a small braindump on why you might want to use ebb&#x2F;threading as a drop-in replacement for threading-lib.
+Same familiar ~&amp;gt; shape, but with ebb&#x2F;forms it can avoid some intermediate list allocation." />
+        <meta property="twitter:description" content="This is a small braindump on why you might want to use ebb&#x2F;threading as a drop-in replacement for threading-lib.
+Same familiar ~&amp;gt; shape, but with ebb&#x2F;forms it can avoid some intermediate list allocation." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Same Threading Syntax but Less Allocation
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;ebb-threading&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Same Threading Syntax but Less Allocation" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;ebb-threading&#x2F;"
+    />
+    <meta name="twitter:title" content="Same Threading Syntax but Less Allocation" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming -->
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://racket-raccoon.github.io/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Same Threading Syntax but Less Allocation</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-05-24
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>This is a small braindump on why you might want to use <code>ebb/threading</code> as a drop-in replacement for <code>threading-lib</code>.
+Same familiar <code>~&gt;</code> shape, but with <code>ebb/forms</code> it can avoid some intermediate list allocation.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>Have I already told you how much I admire the Racket community?
+It's so friendly, full of ridiculously smart people, and every now and then someone casually demos a thing that makes me feel like I need to go read three papers and then lie down for a bit.</p>
+<p>Trying to be a tiny bit less of a lurker, I started attending monthly Racket virtual meetups.
+On one of those meetups, <a rel="external" href="https://racket.discourse.group/u/dominik.pantucek/summary">Dominik</a> gave a great demo of an optimization in <a rel="external" href="https://docs.racket-lang.org/qi/index.html">Qi</a> that immediately grabbed my attention.</p>
+<p>The problem itself is very easy to understand.
+If we write a pipeline of list transformations, Racket normally has to build intermediate lists between those steps:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">filter-map</span><span style="color: #D2A6FF;"> xs</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">map sqr</span><span> (</span><span style="color: #F07178;">filter odd?</span><span> xs)))</span></span></code></pre>
+<p>First we traverse <code>xs</code> to produce the result of <code>filter</code>, then we traverse that intermediate list to produce the result of <code>map</code>.
+Qi can optimize this kind of pipeline and avoid constructing those intermediate lists.
+The docs call this <a rel="external" href="https://docs.racket-lang.org/qi/When_Should_I_Use_Qi_.html#%28part._.Don_t_.Stop_.Me_.Now%29">stream fusion or deforestation</a>, which is a very cool name for "please stop allocating all this stuff I don't actually need".</p>
+<p>I was obviously very impressed.</p>
+<p>So I asked if something similar could work with the <a href="/threading/">threading syntax I already use</a> from Alexis King's threading <a rel="external" href="https://docs.racket-lang.org/threading/index.html">library</a>.
+I just threw the idea out there because it seemed like an amazing feature: keep the familiar <code>~&gt;</code> syntax, but make it possible to get Qi-style deforestation as a drop-in replacement.</p>
+<p>Of course, "drop-in replacement" is the kind of phrase users say right before maintainers start quietly suffering, this turned out to be "harder than it sounds"(tm).</p>
+<p>However, on the next meetup Dominik showed his new <code>ebb</code> package doing exactly that!</p>
+<p>I mean.. you ask a random speculative question, and one month later there is an actual package exploring the idea, how cool is that!
+This is exactly the kind of thing that makes me want to keep showing up to those meetups.</p>
+<p>Here is the threading style I already use:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> threading)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(~&gt; xs</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">map add1 _</span><span>)</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">filter odd? _</span><span>)</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">map</span><span> (</span><span style="color: #FF8F40;">lambda</span><span> (</span><span style="color: #D2A6FF;">x</span><span>) (</span><span style="color: #F07178;">*</span><span> x x))</span><span style="color: #F07178;"> _</span><span>)</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">foldl +</span><span style="color: #D2A6FF;"> 0</span><span style="color: #F07178;"> _</span><span>))</span></span></code></pre>
+<p>With <code>ebb</code> package the same exact code should work if you use <code>(require ebb/threading)</code> instead of plain <code>(require threading)</code>.
+This by itself is already nice because existing code can keep the same general shape but the more interesting part starts when we also require <code>ebb/forms</code>.
+Now <code>map</code>, <code>filter</code>, and <code>foldl</code> are no longer just arbitrary Racket function calls placed inside a threading macro.
+They are forms <code>ebb</code> can recognize, which gives it enough information to fuse the pipeline:</p>
+<ul>
+<li><code>ebb/threading</code> gives us familiar <code>~&gt;</code> syntax</li>
+<li><code>ebb/forms</code> gives <code>ebb</code> optimizable pipeline steps</li>
+</ul>
+<p>So just to make a point we can turn this example into a tiny benchmark, let's start with a big list, <code>map</code>, <code>filter</code>, <code>map</code> again, then consume everything with <code>foldl</code>.
+On my machine, with <code>n = 1000000</code> and five rounds, one run looked like this:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="plain"><span class="giallo-l"><span>threading-lib: cpu=316ms real=316ms gc=141ms result=166666666666500000</span></span>
+<span class="giallo-l"><span>ebb/threading: cpu=285ms real=285ms gc=128ms result=166666666666500000</span></span>
+<span class="giallo-l"><span>ebb/forms: cpu=34ms real=34ms gc=0ms result=166666666666500000</span></span></code></pre>
+<p>Not a real benchmark suite, obviously, but still a very satisfying sanity check.
+The plain <code>ebb</code> threading version is in the same general area as <code>threading-lib</code>.
+The <code>ebb</code> forms version is much faster and spends basically no time in GC, which is exactly what we would hope to see if intermediate lists are not being allocated.
+(this approach gets us into the same kind of territory as writing the traversal manually with <code>for/fold</code> and clauses like <code>#:when</code>, <code>#:unless</code>, and <code>#:do</code>)</p>
+<blockquote>
+<p><strong><em>NOTE</em></strong> There is one thing that is probably obvious for anyone who used Qi before but came as a surprise to me.
+When you make use of <code>ebb/forms</code> inside an <code>ebb</code> pipeline, <code>map</code>, <code>filter</code>, and <code>foldl</code> are not normal Racket list functions anymore, they are stream steps i.e. transformers and a consumer.
+Apparently those stream steps actually don't need <code>_</code> placeholders because the list/stream argument is already implicit.</p>
+</blockquote>
+<p>First implication of that is that you can get rid of those placeholders altogether, in fact <code>ebb</code> does just that under the hood and treats it as</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(~&gt; xs</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">map add1</span><span>)</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">filter odd?</span><span>)</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">map</span><span> (</span><span style="color: #FF8F40;">lambda</span><span> (</span><span style="color: #D2A6FF;">x</span><span>) (</span><span style="color: #F07178;">*</span><span> x x)))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">foldl +</span><span style="color: #D2A6FF;"> 0</span><span>))</span></span></code></pre>
+<p>Second implication is that something like this would work using plain <code>threading-lib</code> but won't work with <code>ebb/forms</code></p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(~&gt;</span><span style="color: #F07178;"> add1</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">map _</span><span> (</span><span style="color: #F07178;">list</span><span style="color: #D2A6FF;"> 1 2 3</span><span>)))</span></span>
+<span class="giallo-l"><span style="color: #5A6673;font-style: italic;">;; =&gt; &#39;(2 3 4)</span></span></code></pre>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/threading/">threading</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/ebb/">ebb</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/benchmarks/">benchmarks</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

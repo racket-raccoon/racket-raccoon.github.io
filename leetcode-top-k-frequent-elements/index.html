@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+        <meta property="og:description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+        <meta property="twitter:description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Leetcode #347: Top K Frequent Elements
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;leetcode-top-k-frequent-elements&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Leetcode #347: Top K Frequent Elements" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;leetcode-top-k-frequent-elements&#x2F;"
+    />
+    <meta name="twitter:title" content="Leetcode #347: Top K Frequent Elements" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming -->
+    
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Pass Theme Preference as Data Attribute -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Reference return to click position script -->
+    <script defer src="https://racket-raccoon.github.io/js/reference-return.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Leetcode #347: Top K Frequent Elements</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-03-28
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>Just finished <a rel="external" href="https://leetcode.com/problems/top-k-frequent-elements/description/">"Top K Frequent Elements"</a> and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on <code>data/heap</code> to my little cheatsheet.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>We are given a list of numbers and need to return <code>k</code> most frequent elements in <strong>any order</strong>.
+First thing that comes to mind is to build a dictionary that tracks how many times each value appears.</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> val-&gt;freq</span><span> (</span><span style="color: #F07178;">make-hash</span><span>))</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #F07178;">for</span><span> ([i (</span><span style="color: #F07178;">in-list</span><span> nums)])</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">hash-update!</span><span> val-&gt;freq i</span><span style="color: #F07178;"> add1</span><span style="color: #D2A6FF;"> 0</span><span>))</span></span></code></pre>
+<p>That first step is pretty much optimal already.
+Next we need to traverse this dictionary and keep only the most frequent values, so a priority queue/heap is an obvious fit.
+Nothing is free though: inserts/removes are more expensive, but peeking the top is cheap.</p>
+<p>When I just started with Racket, I did not want to install any packages and did not even realize we had a heap implementation available.</p>
+<section
+  style="width: 100%; max-width: 100%; margin: 0 auto; text-align: center;">
+  <img src="assets/heap-docs-search.png"  alt="Searching for heap in Racket docs" 
+    style="max-width: 100%; height: auto; display: inline-block;">
+  
+  <caption style="margin-top: 0.5em;">
+    <p style="font-style: italic;">Top results of the quick docs lookup for heap-related modules are NOT very useful.</p>
+  </caption>
+  
+</section>
+<p>It lives <a rel="external" href="https://docs.racket-lang.org/data/Binary_Heaps.html">here</a> in <a rel="external" href="https://pkgs.racket-lang.org/package/data-lib">data-lib package</a>.
+The most useful functions are <code>make-heap</code>, <code>heap-add!</code>, and <code>heap-min</code>.
+<code>heap-min</code> is really more like "top", because with a custom comparator we can create either a min-heap or a max-heap.</p>
+<p>Here is a max-heap version:</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> data/heap)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">struct</span><span style="color: #59C2FF;"> item</span><span> (val freq)</span><span style="color: #FF8F40;"> #:transparent</span><span>)</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">item&gt;</span><span style="color: #D2A6FF;"> lhs rhs</span><span>) (</span><span style="color: #F07178;">&gt;</span><span> (item-freq lhs) (item-freq rhs)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">top-k-frequent</span><span style="color: #D2A6FF;"> nums k</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> val-&gt;freq</span><span> (</span><span style="color: #F07178;">make-hash</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([i (</span><span style="color: #F07178;">in-list</span><span> nums)])</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">hash-update!</span><span> val-&gt;freq i</span><span style="color: #F07178;"> add1</span><span style="color: #D2A6FF;"> 0</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> h</span><span> (make-heap item&gt;))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([(val freq) (</span><span style="color: #F07178;">in-hash</span><span> val-&gt;freq)])</span></span>
+<span class="giallo-l"><span>    (heap-add! h (item val freq)))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for/list</span><span> ([it (in-heap/consume! h)]</span></span>
+<span class="giallo-l"><span>             [i (</span><span style="color: #F07178;">in-range</span><span> k)])</span></span>
+<span class="giallo-l"><span>    (item-val it)))</span></span></code></pre>
+<p>After the max-heap is built, <code>in-heap/consume!</code> pops items one by one from the top.
+Each pop is <code>O(log n)</code>, so this final loop is <code>O(k log n)</code>.
+This approach is not optimal, but it is straightforward and correct.</p>
+<p>A simple improvement is to switch to a <strong>min-heap of size <code>k</code></strong>.
+Since result order does not matter, we can keep only current top <code>k</code> elements and drop the smallest whenever heap size goes above <code>k</code>.</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #F07178;">require</span><span> data/heap)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">struct</span><span style="color: #59C2FF;"> item</span><span> (val freq)</span><span style="color: #FF8F40;"> #:transparent</span><span>)</span></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">item&lt;</span><span style="color: #D2A6FF;"> lhs rhs</span><span>) (</span><span style="color: #F07178;">&lt;</span><span> (item-freq lhs) (item-freq rhs)))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">top-k-frequent</span><span style="color: #D2A6FF;"> nums k</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> val-&gt;freq</span><span> (</span><span style="color: #F07178;">make-hash</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([i (</span><span style="color: #F07178;">in-list</span><span> nums)])</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">hash-update!</span><span> val-&gt;freq i</span><span style="color: #F07178;"> add1</span><span style="color: #D2A6FF;"> 0</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> h</span><span> (make-heap item&lt;))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([(val freq) (</span><span style="color: #F07178;">in-hash</span><span> val-&gt;freq)])</span></span>
+<span class="giallo-l"><span>    (heap-add! h (item val freq))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">when</span><span> (</span><span style="color: #F07178;">&gt;</span><span> (heap-count h) k)</span></span>
+<span class="giallo-l"><span>      (heap-remove-min! h)))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for/list</span><span> ([it (in-heap/consume! h)])</span></span>
+<span class="giallo-l"><span>    (item-val it)))</span></span></code></pre>
+<p>Time to talk complexity.
+Let:</p>
+<ul>
+<li><code>N</code> = input length</li>
+<li><code>U</code> = number of unique elements (<code>U &lt;= N</code>)</li>
+<li><code>k</code> = output size (<code>k &lt;= U</code>)</li>
+</ul>
+<p>For the min-heap approach:</p>
+<ul>
+<li>Building <code>val-&gt;freq</code>: <code>O(N)</code> time, <code>O(U)</code> space</li>
+<li>Processing <code>U</code> hash entries with heap capped at <code>k</code>: <code>O(U log k)</code> time</li>
+<li>Consuming heap of size <code>k</code>: <code>O(k log k)</code> time</li>
+</ul>
+<p>So total time is <code>O(N + U log k + k log k)</code>.
+Because <code>k &lt;= U</code>, we usually simplify that to <code>O(N + U log k)</code>.
+Worst case (<code>U = N</code>) gives <code>O(N log k)</code>.</p>
+<p>Space is <code>O(U + k)</code> (<code>O(U)</code> hash + <code>O(k)</code> heap; output list is also <code>O(k)</code>).
+If we treat <code>k &lt;= U</code>, that is effectively <code>O(U)</code>.</p>
+<p>Honestly, this is already solid, but asymptotically we can do better on time with bucket indexing.
+Instead of heap operations, we put each value into a vector bucket indexed by its frequency.</p>
+<pre class="giallo" style="color: #BFBDB6; background-color: #0D1017;"><code data-lang="racket"><span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">vector-update!</span><span style="color: #D2A6FF;"> v i f</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">vector-set!</span><span> v i (f (</span><span style="color: #F07178;">vector-ref</span><span> v i))))</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>(</span><span style="color: #FF8F40;">define</span><span> (</span><span style="color: #FFB454;">top-k-frequent</span><span style="color: #D2A6FF;"> nums k</span><span>)</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> val-&gt;freq</span><span> (</span><span style="color: #F07178;">make-hash</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([i (</span><span style="color: #F07178;">in-list</span><span> nums)])</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">hash-update!</span><span> val-&gt;freq i</span><span style="color: #F07178;"> add1</span><span style="color: #D2A6FF;"> 0</span><span>))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> N</span><span> (</span><span style="color: #F07178;">length</span><span> nums))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #FF8F40;">define</span><span style="color: #59C2FF;"> v</span><span> (</span><span style="color: #F07178;">make-vector</span><span> (</span><span style="color: #F07178;">add1</span><span> N)</span><span style="color: #F07178;"> &#39;</span><span>()))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for</span><span> ([(val freq) (</span><span style="color: #F07178;">in-hash</span><span> val-&gt;freq)])</span></span>
+<span class="giallo-l"><span>    (vector-update! v freq (</span><span style="color: #FF8F40;">lambda</span><span> (</span><span style="color: #D2A6FF;">x</span><span>) (</span><span style="color: #F07178;">cons</span><span> val x))))</span></span>
+<span class="giallo-l"><span>  (</span><span style="color: #F07178;">for*/fold</span><span> ([acc</span><span style="color: #F07178;"> &#39;</span><span>()] [n</span><span style="color: #D2A6FF;"> 0</span><span>]</span><span style="color: #FF8F40;"> #:result</span><span> acc)</span></span>
+<span class="giallo-l"><span>             ([bucket (</span><span style="color: #F07178;">in-vector</span><span> v N</span><span style="color: #D2A6FF;"> -1 -1</span><span>)]</span></span>
+<span class="giallo-l"><span>              [val (</span><span style="color: #F07178;">in-list</span><span> bucket)]</span></span>
+<span class="giallo-l"><span style="color: #FF8F40;">              #:break</span><span> (</span><span style="color: #F07178;">=</span><span> k n))</span></span>
+<span class="giallo-l"><span>    (</span><span style="color: #F07178;">values</span><span> (</span><span style="color: #F07178;">cons</span><span> val acc) (</span><span style="color: #F07178;">add1</span><span> n))))</span></span></code></pre>
+<p>I am not convinced this is always faster in practice in Racket, but on paper inserts are cheaper than heap maintenance.
+(I suspect <code>vector-update!</code> api is not provided by default for a reason, they probably don't want to encourage mutation so I don't expect this to be super efficient..)</p>
+<p>Bucket complexity:</p>
+<ul>
+<li>Build hash: <code>O(N)</code> time, <code>O(U)</code> space</li>
+<li>Put <code>U</code> items into buckets: <code>O(U)</code> time</li>
+<li>Scan buckets from <code>N</code> down until we collect <code>k</code>: worst case <code>O(N + k)</code> time</li>
+</ul>
+<p>Total time: <code>O(N + U + N + k)</code>.
+That can be simplified several valid ways:</p>
+<ul>
+<li><code>O(N + U)</code></li>
+<li><code>O(N + k)</code></li>
+<li>and with <code>k &lt;= U &lt;= N</code>, simply <code>O(N)</code></li>
+</ul>
+<p>Space:</p>
+<ul>
+<li>hash <code>O(U)</code></li>
+<li>bucket vector <code>O(N)</code></li>
+<li>bucket list nodes <code>O(U)</code></li>
+</ul>
+<p>So <code>O(N + U)</code>, and with <code>U &lt;= N</code>, <code>O(N)</code>.</p>
+<p>So the tradeoff is roughly:</p>
+<ul>
+<li>min-heap: better memory when <code>k</code> is small, but <code>log k</code> factor in time</li>
+<li>buckets: better asymptotic time, but unconditional <code>O(N)</code> bucket storage</li>
+</ul>
+
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/leetcode/">leetcode</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/arrays/">arrays</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/hash-table/">hash-table</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/heap/">heap</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>
