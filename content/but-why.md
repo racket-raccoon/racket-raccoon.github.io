@@ -3,7 +3,6 @@ title = "Yet another dev blog? Oh no"
 date = 2025-01-01
 [taxonomies]
 tags = ["SICP", "Sussman", "Perils"]
-
 +++
 
 In your first post, you're expected to uncover the motivation behind this whole project and justify its very existence. I'll give it a try — but I won't try too hard, that's for sure.
