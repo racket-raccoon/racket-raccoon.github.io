@@ -54,8 +54,7 @@ My first attempt looked something like this:
 
 (define array
   (hash-ref
-   (call-with-input-file "steps.json"
-     (λ (in) (read-json in)))
+   (call-with-input-file "steps.json" read-json)
    'values))
 
 (define date->steps
@@ -66,7 +65,8 @@ My first attempt looked something like this:
 (define data
   (sort
    (filter (λ (rec) (string>=? (car rec) "2025-01-14")) date->steps)
-   (λ (lhs rhs) (string<? (car lhs) (car rhs)))))
+   string<?
+   #:key car))
 
 (call-with-output-file "steps.csv"
   #:exists 'replace
