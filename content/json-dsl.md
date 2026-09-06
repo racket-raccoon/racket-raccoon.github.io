@@ -5,8 +5,8 @@ date = 2025-02-01
 tags = ["json", "dsl", "I/O"]
 +++
 
-What started as a simple fitness data export turned into a perfect illustration of why domain-specific languages can be so powerful.
-A brief journey from Racket to jsonquerylang.
+I wanted to get my Garmin step counts into a spreadsheet, so I wrote a small Racket script.
+Then somebody in Janet Carr's chat pointed me at jsonquerylang, which made the same job almost embarrassingly small.
 
 <!-- more -->
 
@@ -103,7 +103,8 @@ The `#:exists` flag specifies how to handle situations when the output file alre
 By default, an exception would be thrown, so it's easier to just silently override the file each time.
 
 I was working on this small exercise while hanging out on [Janet's stream](https://www.twitch.tv/janetacarr/ "Janet Carr") (amazing Clojure developer) when someone in the chat mentioned [jsonquerylang](https://jsonquerylang.org/ "playground") - a very cute and impressive DSL for JSON processing.
-And what's a Racket blog without a DSL discussion? Just look at how cleanly the exact same idea can be expressed in this language:
+And what's a Racket blog without a DSL discussion?
+Just look at how cleanly the exact same idea can be expressed in this language:
 
 ```
 .values
@@ -117,5 +118,5 @@ And what's a Racket blog without a DSL discussion? Just look at how cleanly the 
 There's a live playground at [https://jsonquerylang.org/](https://jsonquerylang.org/ "playground") where you can simply paste your JSON into the "Input" text area and edit the query line by line, seeing the query result updated live in the output field.
 You can tell how well this small language is designed by how quickly I was able to write this query without any prior experience, guided only by examples and quick reference.
 
-This example perfectly illustrates how powerful domain-specific languages can be as tools - it's a perfect illustration of the phrase "right tool for the job".
-A good DSL provides you with the right mental model and the right "angle of attack" for the problem you're trying to solve.
+I don't plan to replace every ten-line Racket script with a DSL, but this one fit the problem unusually well.
+Its operations matched the questions I was already asking of the JSON, and I managed to write the query from the examples and quick reference alone.

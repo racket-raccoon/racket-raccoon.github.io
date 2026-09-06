@@ -5,11 +5,14 @@ date = 2025-01-19
 tags = ["let", "letrec", "default arguments", "mutual recursion", "trace"]
 +++
 
-A quick introduction to the *named* `let`, why you might want to use `letrec`, and what *"mutually recursive functions"* are. To learn more about the `let` family, consult [The Racket Guide](https://docs.racket-lang.org/guide/let.html "let") and [The Racket Reference](https://docs.racket-lang.org/reference/let.html).
+A quick introduction to the *named* `let`, why you might want to use `letrec`, and what *"mutually recursive functions"* are.
+To learn more about the `let` family, consult [The Racket Guide](https://docs.racket-lang.org/guide/let.html "let") and [The Racket Reference](https://docs.racket-lang.org/reference/let.html).
 
 <!-- more -->
 
-The syntax of named let initially felt alien to me, requiring multiple visits to the reference page, but it's actually quite simple. Named `let` is syntactic sugar that allows us to write a function and immediately call it in-place — perfect for recursion and basic `while` loops. Let's examine the classic SICP factorial example:
+Named `let` looked backwards to me at first; I had to return to the reference page more than once.
+It is basically a local recursive function that gets called immediately, which makes it handy for recursion and little `while`-style loops.
+Here is the SICP factorial example I used to make sense of it:
 
 ```Racket
 (define (factorial n)
@@ -22,7 +25,8 @@ The syntax of named let initially felt alien to me, requiring multiple visits to
   (fact-iter))
 ```
 
-The only modification here is that instead of explicitly calling `fact-iter` as `(fact-iter 1 1 n)`, we've made those arguments [optional](https://docs.racket-lang.org/guide/lambda.html#%28part._.Declaring_.Optional_.Arguments%29 "optional arguments") by providing default values. This makes it look very similar to the named `let` syntax:
+The only modification here is that instead of explicitly calling `fact-iter` as `(fact-iter 1 1 n)`, we've made those arguments [optional](https://docs.racket-lang.org/guide/lambda.html#%28part._.Declaring_.Optional_.Arguments%29 "optional arguments") by providing default values.
+This makes it look very similar to the named `let` syntax:
 
 ```Racket
 (define (factorial n)
@@ -34,9 +38,12 @@ The only modification here is that instead of explicitly calling `fact-iter` as 
                    max-count))))
 ```
 
-Some programmers prefer using `let` over `define` for local bindings, even without a compelling reason — it's often considered a matter of style. However, the general rule is to reduce code indentation when possible and use `define` unless you need `let`-specific features. The Racket refactoring tool [resyntax](https://docs.racket-lang.org/resyntax/index.html "resyntax") can automatically refactor unnecessary `let` expressions, as shown in its very first documentation example.
+I used to reach for `let` for local bindings even when an internal `define` left the code with less indentation.
+These days I mostly choose whichever version is easier to scan.
+The Racket refactoring tool [resyntax](https://docs.racket-lang.org/resyntax/index.html "resyntax") can perform this particular cleanup automatically; it is the first example in its documentation.
 
-Notably, attempting to rewrite the first example with raw `let` and `lambda` fails because the identifier created by a regular `let` can't be recursive. `fact-iter` isn't available in the `lambda` body — you must use `letrec`:
+Notably, attempting to rewrite the first example with raw `let` and `lambda` fails because the identifier created by a regular `let` can't be recursive.
+`fact-iter` isn't available in the `lambda` body — you must use `letrec`:
 
 ```Racket
 (define (factorial n)
@@ -50,7 +57,10 @@ Notably, attempting to rewrite the first example with raw `let` and `lambda` fai
     (fact-iter)))
 ```
 
-While `let*` only allows using identifiers from previous `[]` clauses, `letrec` enables both recursive use of an identifier and referencing identifiers from previous and subsequent clauses, enabling [mutually recursive functions](https://en.wikipedia.org/wiki/Mutual_recursion). A classic example is the `is-even?` and `is-odd?` functions defined in terms of each other. Let's use the `racket/trace` package to visualize the call stack — a valuable debugging tool, particularly for recursive calls:
+`let*` lets each clause refer to earlier clauses.
+`letrec` lets the bindings refer to one another, including themselves, which is what we need for [mutually recursive functions](https://en.wikipedia.org/wiki/Mutual_recursion).
+The usual example is `is-even?` and `is-odd?`.
+`racket/trace` makes their little game of ping-pong visible:
 
 ```Racket
 (define (is-even? x)
@@ -77,7 +87,8 @@ While `let*` only allows using identifiers from previous `[]` clauses, `letrec` 
 #t
 ```
 
-Now you can see these functions playing ping-pong, calling each other until reaching a base case. Finally, here's the same example rewritten using `letrec`, which allows mutual recursion even though `is-odd?` is referenced before being defined:
+They keep calling each other until `x` reaches zero.
+Here is the same example with `letrec`, where `is-even?` can refer to `is-odd?` before its definition appears:
 
 ```Racket
 (letrec ([is-even?

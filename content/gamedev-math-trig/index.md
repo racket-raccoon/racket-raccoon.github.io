@@ -5,7 +5,8 @@ date = 2026-02-08
 tags = ["math", "gamedev"]
 +++
 
-This is part two of the "Math for Gamedev 101" series. You can read part one here: [Math for Gamedev 101: Vectors](/gamedev-math-vectors/).
+This is part two of the "Math for Gamedev 101" series.
+You can read part one here: [Math for Gamedev 101: Vectors](/gamedev-math-vectors/).
 As before, these are my notes from [Simon's](https://simondev.io/about) course on [Math for Game Developers](https://simondev.io/lessons/math).
 This part is dedicated to basic trigonometry.
 The first GIF is from the Wikipedia article on [radians](https://en.wikipedia.org/wiki/Radian), and the second one was generated with ImageMagick from this Racket [snippet](https://gist.github.com/racket-raccoon/e280564959b28606cfee4451b268649e).

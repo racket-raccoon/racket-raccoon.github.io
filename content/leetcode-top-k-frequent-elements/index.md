@@ -57,7 +57,7 @@ Here is a max-heap version:
 
 After the max-heap is built, `in-heap/consume!` pops items one by one from the top.
 Each pop is `O(log n)`, so this final loop is `O(k log n)`.
-This approach is not optimal, but it is straightforward and correct.
+This keeps every distinct value in the heap even though we only need `k` of them.
 
 A simple improvement is to switch to a **min-heap of size `k`**.
 Since result order does not matter, we can keep only current top `k` elements and drop the smallest whenever heap size goes above `k`.
@@ -99,7 +99,7 @@ Worst case (`U = N`) gives `O(N log k)`.
 Space is `O(U + k)` (`O(U)` hash + `O(k)` heap; output list is also `O(k)`).
 If we treat `k <= U`, that is effectively `O(U)`.
 
-Honestly, this is already solid, but asymptotically we can do better on time with bucket indexing.
+That would already be enough for Leetcode, but I also wanted to try the bucket solution.
 Instead of heap operations, we put each value into a vector bucket indexed by its frequency.
 
 ```Racket
@@ -124,23 +124,9 @@ Instead of heap operations, we put each value into a vector bucket indexed by it
 I am not convinced this is always faster in practice in Racket, but on paper inserts are cheaper than heap maintenance.
 (I suspect `vector-update!` api is not provided by default for a reason, they probably don't want to encourage mutation so I don't expect this to be super efficient..)
 
-Bucket complexity:
-- Build hash: `O(N)` time, `O(U)` space
-- Put `U` items into buckets: `O(U)` time
-- Scan buckets from `N` down until we collect `k`: worst case `O(N + k)` time
-
-Total time: `O(N + U + N + k)`.
-That can be simplified several valid ways:
-- `O(N + U)`
-- `O(N + k)`
-- and with `k <= U <= N`, simply `O(N)`
-
-Space:
-- hash `O(U)`
-- bucket vector `O(N)`
-- bucket list nodes `O(U)`
-
-So `O(N + U)`, and with `U <= N`, `O(N)`.
+Creating the `N + 1` buckets takes `O(N)` space.
+Inserting the `U` unique values takes `O(U)` time, and scanning backwards through the buckets is `O(N)` in the worst case.
+Since `U` and `k` cannot exceed `N`, the whole approach is `O(N)` time and `O(N)` space.
 
 So the tradeoff is roughly:
 - min-heap: better memory when `k` is small, but `log k` factor in time

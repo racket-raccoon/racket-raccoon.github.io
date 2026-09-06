@@ -76,7 +76,8 @@ I foolishly used `null` instead of `'end` when I wrote it first and fell head on
 Matching a two-element list against `(list null null)` apparently might not perform as you would expect and both Claude and ChatGPT initially don't seem to be aware of that either.
 You should think about `null` in Racket as a regular identifier like `(define null '())` rather than some magic *literal*.
 Here is how ChatGPT describes it if you turn on the "deep research" mode for the request "evaluate this racket expression `(match (list #\p #\p) [(list null null) #t] [else #f])`":
-> Since the first pattern matches (list #\p #\p), the overall expression returns #t. In summary, (match (list #\p #\p) [(list null null) #t] [else #f]) evaluates to #t because null in the pattern is a wildcard variable (not the empty-list), and the two characters are equal so the match succeeds
+> Since the first pattern matches (list #\p #\p), the overall expression returns #t.
+> In summary, (match (list #\p #\p) [(list null null) #t] [else #f]) evaluates to #t because null in the pattern is a wildcard variable (not the empty-list), and the two characters are equal so the match succeeds
 
 Very last point I wanted to make is related to functions like `next` that have an internal state and return the next value in a sequence every time you call them.
 There is a nice convenience function `in-producer` that creates a wrapper around such functions and allows you to iterate through those sequences with a regular `for` loop.

@@ -5,12 +5,13 @@ date = 2025-03-02
 tags = ["podcast"]
 +++
 
-Dive into the lore of Scheme and Racket with these awesome podcast episodes – where coding stories and functional wisdom come to life.
-I've hand-picked each one to create the ultimate listening guide for Lisp enthusiasts.
+This is my list of Scheme and Racket podcast episodes.
+I kept losing track of them, so I'm putting all the links in one place.
 
 <!-- more -->
 
-> I've deliberately chosen not to include Clojure-specific content, as there's so much of it out there that it would easily take over the page. I also opted not to include talks from the [Boston Computation Club](https://bstn.cc/), as their speakers often rely on visual presentations, making them better suited for [YouTube](https://www.youtube.com/channel/UCdQKL8IGTVagOPWE_cjj0TA).
+> I've deliberately chosen not to include Clojure-specific content, as there's so much of it out there that it would easily take over the page.
+> I also opted not to include talks from the [Boston Computation Club](https://bstn.cc/), as their speakers often rely on visual presentations, making them better suited for [YouTube](https://www.youtube.com/channel/UCdQKL8IGTVagOPWE_cjj0TA).
 
 ## [Functional Geekery](https://www.functionalgeekery.com/)
 * [Episode 1 – Robert C. Martin](https://www.functionalgeekery.com/episode-1-robert-c-martin/)
