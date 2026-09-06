@@ -15,7 +15,9 @@ taxonomies = [
 build_search_index = true 
 
 [markdown.highlighting]
-theme = "ayu-dark"
+style = "class"
+dark_theme = "material-theme-palenight"
+light_theme = "everforest-light"
 error_on_missing_language = true
 
 [search]

@@ -1,4 +1,5 @@
 public/
+/static/giallo-*.css
 
 # Mac files
 .DS_Store
