@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+        <meta property="og:description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+        <meta property="twitter:description" content="Recently I bought Simon&#x27;s course on Math for Game Developers and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on Euclidean vectors." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Math for Gamedev 101: Vectors
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-vectors&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Math for Gamedev 101: Vectors" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;gamedev-math-vectors&#x2F;"
+    />
+    <meta name="twitter:title" content="Math for Gamedev 101: Vectors" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming (giallo) -->
+    <link id="giallo-dark" rel="stylesheet" type="text/css"
+      href="https:&#x2F;&#x2F;racket-raccoon.github.io/giallo-dark.css"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link id="giallo-light" rel="stylesheet" type="text/css"
+      href="https:&#x2F;&#x2F;racket-raccoon.github.io/giallo-light.css"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Initialize theme before paint -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script defer src="https://racket-raccoon.github.io/js/table-wrap.js"></script>
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Math for Gamedev 101: Vectors</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>1 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-01-25
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>Recently I bought <a rel="external" href="https://simondev.io/about">Simon's</a> course on <a rel="external" href="https://simondev.io/lessons/math">Math for Game Developers</a> and as I finally found some time to go through the first couple of  chapters I would like to share my lecture notes here.
+I used Racket for mathematical functions and comments for plain English, a lot of stuff is also borrowed from the wiki page on <a rel="external" href="https://en.wikipedia.org/wiki/Euclidean_vector">Euclidean vectors</a>.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span><pre class="giallo z-code"><code data-lang="racket"><span class="giallo-l"><span class="z-keyword z-keyword z-other">#lang</span><span> r</span><span>acket</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">require</span><span> r</span><span>ackunit</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Euclidean space is the mathematical formalization of the &quot;flat&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; geometry we learned in school where for example:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; * parallel lines never meet</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; * angles in triangle sum to 180°</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; * Pythagorean theorem holds.. etc</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Cartesian coordinate system is the standard way to represent</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Euclidean space numerically using perpendicular axes x y z</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; to define positions in space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Simple &quot;number line&quot; is way to represent a one-dimensional Euclidean space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Point / Position / Position Vector in gamedev all denote the same idea:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; representation of a specific location in the virtual space</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector = Magnitude (length or size) + Direction</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Points are written with just letters; Vectors have a little arrow on top</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Numerically they are represented exactly the same but mean different things</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Point vs Vector</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; thermometer example: one-dimensional space</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> current</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span><span class="z-punctuation z-definition z-comment">  ;</span><span class="z-comment"> current temperature (point, initial state)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> forecast</span><span class="z-constant z-numeric"> 2</span><span class="z-punctuation">)</span><span class="z-punctuation z-definition z-comment"> ;</span><span class="z-comment"> &quot;2 degrees warmer&quot; change (vector)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">;; point + vector = point (also point - vector = point)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">+</span><span> c</span><span>urrent</span><span> f</span><span>orecast</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 7</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> A</span><span class="z-constant z-numeric"> 10</span><span class="z-punctuation">)</span><span class="z-punctuation z-definition z-comment"> ;</span><span class="z-comment"> temperature now (point)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> B</span><span class="z-constant z-numeric"> 15</span><span class="z-punctuation">)</span><span class="z-punctuation z-definition z-comment"> ;</span><span class="z-comment"> temperature later (point)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">;; point - point = vector</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">-</span><span> B</span><span> A</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">;; (point + point) doesn&#39;t make much sense</span></span>
+<span class="giallo-l"><span class="z-punctuation">           )</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Two vectors are considered equal</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; if they have the same magnitude and direction = if their coordinates are equal</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Equality</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> a</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> b</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; contracts from now on should help to distinguish</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; points/vectors (numvector?) from scalars (number?)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; those are more strict contracts for two- and three-dimensional vectors</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">n</span><span class="z-entity z-name z-function">umvector?</span><span class="z-variable z-variable z-parameter"> v</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">and</span><span class="z-punctuation"> (</span><span class="z-support z-function">vector?</span><span> v</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">       (</span><span class="z-support z-function">for/and</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>x</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-vector</span><span> v</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">number?</span><span> x</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> vector2/c</span><span class="z-punctuation"> (</span><span class="z-support z-function">vector/c</span><span class="z-support z-function"> number?</span><span class="z-support z-function"> number?</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> vector3/c</span><span class="z-punctuation"> (</span><span class="z-support z-function">vector/c</span><span class="z-support z-function"> number?</span><span class="z-support z-function"> number?</span><span class="z-support z-function"> number?</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; To add the vectors we add the corresponding components from each vector</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> a</span><span> b</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">vector-map</span><span class="z-support z-function"> +</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>s</span><span>ub</span><span> a</span><span> b</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">vector-map</span><span class="z-support z-function"> -</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Addition and subtraction</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> a</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> b</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">2</span><span class="z-constant z-numeric"> 4</span><span class="z-constant z-numeric"> 6</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>s</span><span>ub</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">r</span><span class="z-entity z-name z-function">andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">vector</span><span class="z-punctuation"> (</span><span class="z-support z-function">random</span><span class="z-constant z-numeric"> 10</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">random</span><span class="z-constant z-numeric"> 10</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">random</span><span class="z-constant z-numeric"> 10</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; (a + b) + c = a + (b + c) </span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Associativity</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> a</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> b</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> c</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span> c</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> a</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> b</span><span> c</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; a + b = b + a </span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Commutativity</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> a</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> b</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span>a</span><span>dd</span><span> b</span><span> a</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector subtraction is neither associative nor commutative!</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector length with Pythagorean theorem</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector&#39;s v magnitude is denoted as ‖v‖</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span> v</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span class="z-support z-function"> number?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">sqrt</span><span class="z-punctuation"> (</span><span class="z-support z-function">for/fold</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>a</span><span>cc</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>x</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-vector</span><span> v</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">+</span><span> a</span><span>cc</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> x</span><span> x</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Here &#39;from&#39; and &#39;to&#39; are not vectors but points!</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>d</span><span>istance</span><span> f</span><span>rom</span><span> t</span><span>o</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-support z-function"> number?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">magnitude</span><span class="z-punctuation"> (</span><span>s</span><span>ub</span><span> t</span><span>o</span><span> f</span><span>rom</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Distance</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">2</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 2</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span>           </span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>d</span><span>istance</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-constant z-numeric"> 12</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 13</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Scalar multiplication of vector V and scalar S written as SV</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>s</span><span>cale</span><span> v</span><span> s</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span class="z-support z-function"> number?</span><span> n</span><span>umvector?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">vector-map</span><span class="z-punctuation"> (</span><span class="z-support z-function">curry</span><span class="z-support z-function"> *</span><span> s</span><span class="z-punctuation">)</span><span> v</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Hadamard Product, written as a ∘ b</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; just an element-wise multiplication</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; could be used for non-uniform scale!</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>h</span><span>adamard</span><span> a</span><span> b</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">vector-map</span><span class="z-support z-function"> *</span><span> a</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Both scale functions (scalar and component-wise) are</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Commutative and associative - order doesn&#39;t matter</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Vector scaling</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; multiplying with a scalar changes magnitude, same direction</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>s</span><span>cale</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">12</span><span class="z-constant z-numeric"> 16</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; negative scalar reverses direction </span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>s</span><span>cale</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> -1.5</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">-1.5</span><span class="z-constant z-numeric"> -3.0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; RGB color can be represented as three-dimensional vector!</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; Hadamard Product could be used to tint color by other color</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>t</span><span>int-red</span><span> c</span><span>olor</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">             (</span><span class="z-support z-function">-&gt;</span><span> v</span><span>ector3/c</span><span> v</span><span>ector3/c</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">             (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> red-mask</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">             (</span><span>h</span><span>adamard</span><span> c</span><span>olor</span><span> r</span><span>ed-mask</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span>           </span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>s</span><span>cale</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">5</span><span class="z-constant z-numeric"> 10</span><span class="z-constant z-numeric"> 15</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>h</span><span>adamard</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>h</span><span>adamard</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">5</span><span class="z-constant z-numeric"> 6</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">5</span><span class="z-constant z-numeric"> 5</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">25</span><span class="z-constant z-numeric"> 30</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>h</span><span>adamard</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> -1</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> -2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Unit vector is any vector with a length of one, indicates direction</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; denoted by a lowercase letter with a circumflex or &quot;hat&quot; ^</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector can be normalized or divided by its length to create a unit vector</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>n</span><span>ormalize</span><span> v</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span>s</span><span>cale</span><span> v</span><span class="z-punctuation"> (</span><span class="z-support z-function">/</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span> v</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Normalized Vectors</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>n</span><span>ormalize</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 4</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3/5</span><span class="z-constant z-numeric"> 4/5</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>n</span><span>ormalize</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0.75</span><span class="z-constant z-numeric"> 0.25</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span>n</span><span>ormalize</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">3</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Dot Product, Scalar projection, Scalar product</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; also ‖a‖ ‖b‖ cosθ where θ is an angle between a and b</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; if both normalized gives us a way to say how similar vectors are</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span> a</span><span> b</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> n</span><span>umvector?</span><span> n</span><span>umvector?</span><span class="z-support z-function"> number?</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for/fold</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>a</span><span>cc</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>x</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-vector</span><span> a</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation"> [</span><span>y</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-vector</span><span> b</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">+</span><span> a</span><span>cc</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> x</span><span> y</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Dot Product</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; Orthogonal! Perpendicular to each other, θ = π/2, cosθ = 0</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> -1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; Opposite direction</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">-1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> -1</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; Same direction</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; dot product of a vector with itself is equal to</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; the square of the magnitude</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> a</span><span class="z-punctuation"> (</span><span>r</span><span>andom-vector3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> ε</span><span class="z-constant z-numeric"> 1e-12</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-=</span><span class="z-punctuation"> (</span><span>d</span><span>ot</span><span> a</span><span> a</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">expt</span><span class="z-punctuation"> (</span><span class="z-support z-function">magnitude</span><span> a</span><span class="z-punctuation">)</span><span class="z-constant z-numeric"> 2</span><span class="z-punctuation">)</span><span> ε</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Vector (a x b) is perpendicular to both a and b and the plane formed by them</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">;</span><span class="z-comment">; Its magnitude represents the area of the parallelogram spanned by a and b</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">define/contract</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span> a</span><span> b</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">-&gt;</span><span> v</span><span>ector3/c</span><span> v</span><span>ector3/c</span><span> v</span><span>ector3/c</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">match-let</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span class="z-punctuation">(</span><span class="z-support z-function">vector</span><span> a</span><span>x</span><span> a</span><span>y</span><span> a</span><span>z</span><span class="z-punctuation">)</span><span> a</span><span class="z-punctuation">]</span></span>
+<span class="giallo-l"><span class="z-punctuation">              [</span><span class="z-punctuation">(</span><span class="z-support z-function">vector</span><span> b</span><span>x</span><span> b</span><span>y</span><span> b</span><span>z</span><span class="z-punctuation">)</span><span> b</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">vector</span><span class="z-punctuation"> (</span><span class="z-support z-function">-</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>y</span><span> b</span><span>z</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>z</span><span> b</span><span>y</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">            (</span><span class="z-support z-function">-</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>z</span><span> b</span><span>x</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>x</span><span> b</span><span>z</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">            (</span><span class="z-support z-function">-</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>x</span><span> b</span><span>y</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">*</span><span> a</span><span>y</span><span> b</span><span>x</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span>t</span><span>est-case</span><span class="z-string"> &quot;</span><span class="z-string">Cross product</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; Order matters! Changing order reverses the direction</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> -1</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; For parallel vectors a x b results in the zero vector</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 1</span><span class="z-constant z-numeric"> 1</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">2</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 2</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">           ;</span><span class="z-comment">; If either a or b are zero vector, a x b is also zero vector</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">           (</span><span>c</span><span>heck-equal?</span><span class="z-punctuation"> (</span><span>c</span><span>ross</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">1</span><span class="z-constant z-numeric"> 2</span><span class="z-constant z-numeric"> 3</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation"> #(</span><span class="z-constant z-numeric">0</span><span class="z-constant z-numeric"> 0</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">provide</span><span> n</span><span>umvector?</span><span> v</span><span>ector2/c</span><span> v</span><span>ector3/c</span><span class="z-support z-function"> magnitude</span><span> d</span><span>ot</span><span class="z-punctuation">)</span></span></code></pre>
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/math/">math</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/gamedev/">gamedev</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>
