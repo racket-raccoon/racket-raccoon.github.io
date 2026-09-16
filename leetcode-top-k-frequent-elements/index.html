@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en" data-theme="toggle">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- Enable responsiveness on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+      
+        
+        <meta name="description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+        <meta property="og:description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+        <meta property="twitter:description" content="Just finished &quot;Top K Frequent Elements&quot; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on data&#x2F;heap to my little cheatsheet." />
+      
+    
+
+    <!-- Title -->
+    
+      
+    
+    <title>
+    
+    Leetcode #347: Top K Frequent Elements
+    
+</title>
+
+    <!-- Additional Facebook Meta Tags -->
+    <meta property="og:site_name" content="Racket Raccoon" />
+    <meta
+      property="og:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;leetcode-top-k-frequent-elements&#x2F;"
+    />
+    <meta
+      property="og:type"
+      content="article"
+    />
+    <meta property="og:title" content="Leetcode #347: Top K Frequent Elements" />
+
+    <!-- Additional Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;leetcode-top-k-frequent-elements&#x2F;"
+    />
+    <meta name="twitter:title" content="Leetcode #347: Top K Frequent Elements" />
+
+    <!-- Additional Fediverse Tags -->
+     
+
+    <!-- Cover images -->
+    
+    
+    
+
+    <meta
+      property="og:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <meta
+      name="twitter:image"
+      content="https:&#x2F;&#x2F;racket-raccoon.github.io&#x2F;images&#x2F;avatar.png"
+    />
+
+    <!-- Favicon -->
+    
+    
+    <link rel="icon" type="image/png" href="&#x2F;images&#x2F;avatar.png" />
+    
+
+    <!-- RSS Feed -->
+    
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="RSS"
+      href="https://racket-raccoon.github.io/atom.xml"
+    />
+    
+
+    <!-- Load Styles -->
+    
+      <link
+        rel="stylesheet"
+        href="https://racket-raccoon.github.io/site.css"
+      />
+    
+
+    <!-- Syntax highlighting theming (giallo) -->
+    <link id="giallo-dark" rel="stylesheet" type="text/css"
+      href="https:&#x2F;&#x2F;racket-raccoon.github.io/giallo-dark.css"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link id="giallo-light" rel="stylesheet" type="text/css"
+      href="https:&#x2F;&#x2F;racket-raccoon.github.io/giallo-light.css"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Load Fonts -->
+    
+
+  
+
+
+
+
+
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  
+
+
+
+<!-- Forcing Font -->
+<style>
+body {
+  font-family:
+    "JetBrains Mono", Menlo, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif !important;
+}
+</style>
+
+
+    <!-- Initialize theme before paint -->
+    <script src="https://racket-raccoon.github.io/js/init-theme.js"></script>
+
+    <!-- Additional scripts -->
+    
+      
+      
+        <script src="https://racket-raccoon.github.io/js/toggle-theme.js"></script>
+      
+      <script defer src="https://racket-raccoon.github.io/js/table-wrap.js"></script>
+      
+<!-- MathJax script for rendering LaTeX math equations -->
+<script src="https://racket-raccoon.github.io/js/mathjax-config.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  async
+></script>
+
+
+      
+  <script type="text/javascript" src="https://racket-raccoon.github.io/elasticlunr.min.js"></script>
+  <script type="text/javascript" src="https://racket-raccoon.github.io/js/search.js"></script>
+
+
+    
+  </head>
+
+  <!-- Body element (contents of the page) -->
+  <body class="hack main container">
+    
+  
+    
+    
+      
+  
+  <section class="nav-header">
+    <a href="/" style="all: unset; cursor: pointer;">
+      <img
+        src="/images/avatar.png"
+        alt="Raccoon - Racket programming language mascot"
+        style="width: 60px; height: auto; border-radius: 50%;"
+      />
+    </a>
+    <!--
+    <nav
+      itemscope
+      itemtype="http://schema.org/SiteNavigationElement"
+      class="navbar"
+    >
+      <section class="nav-links">
+        
+        <a
+          itemprop="url"
+          class=""
+          href="https://racket-raccoon.github.io/tags"
+        >
+          <span itemprop="name">Tags</span>
+        </a>
+        
+      </section>
+    </nav>
+    -->
+    <aside class="user-actions-container">
+      
+      <section class="search-container">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="search-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+        <input type="text" id="search" placeholder="Search..." />
+        <img
+          src="https://racket-raccoon.github.io/icons/slash-square.svg"
+          id="slash-icon"
+          class="slash-icon"
+          alt="Press / to search"
+        />
+      </section>
+       
+      <a id="dark-mode-toggle" href="#">
+        <img
+          src="https://racket-raccoon.github.io/icons/sun.svg"
+          id="sun-icon"
+          class="invert-icon"
+          alt="Light mode"
+        />
+        <img
+          src="https://racket-raccoon.github.io/icons/moon.svg"
+          id="moon-icon"
+          alt="Dark mode"
+        />
+      </a>
+       
+      <a
+        href="https://racket-raccoon.github.io/atom.xml"
+        class="feed-icon"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://racket-raccoon.github.io/icons/rss.svg"
+          id="rss-icon"
+          alt="RSS feed"
+          class="social-icon"
+        />
+      </a>
+        
+    </aside>
+  </section>
+  
+  <!-- Search modal overlay and results (positioned globally) -->
+  <section class="search-backdrop"></section>
+  <dialog class="search-results" aria-live="polite">
+    <article class="search-modal-header">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        class="search-modal-icon"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+      <input type="text" id="search-modal" placeholder="Search..." />
+    </article>
+    <article class="search-results-count" id="search-results-count"></article>
+    <article class="search-results__items" role="list"></article>
+    <footer class="search-modal-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+      <span><kbd>↵ </kbd> to select</span>
+      <span><kbd>esc</kbd> to close</span>
+    </footer>
+  </dialog>
+  
+  
+
+    
+
+
+    <main>
+      
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Leetcode #347: Top K Frequent Elements</h1>
+        <data class="muted">
+    <svg class="icon i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <data>4 minute read</data>
+    <svg class="icon i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    Published: 2026-03-28
+</data>
+    </header>
+
+    <article itemprop="articleBody">
+        
+            <p>Just finished <a rel="external" href="https://leetcode.com/problems/top-k-frequent-elements/description/">"Top K Frequent Elements"</a> and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on <code>data/heap</code> to my little cheatsheet.</p>
+
+            
+
+            <!-- Render the rest of the content after removing the summary portion -->
+            
+<span id="continue-reading"></span>
+<p>We are given a list of numbers and need to return <code>k</code> most frequent elements in <strong>any order</strong>.
+First thing that comes to mind is to build a dictionary that tracks how many times each value appears.</p>
+<pre class="giallo z-code"><code data-lang="racket"><span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> val-&gt;freq</span><span class="z-punctuation"> (</span><span class="z-support z-function">make-hash</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-list</span><span> n</span><span>ums</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">hash-update!</span><span> v</span><span>al-&gt;freq</span><span> i</span><span class="z-support z-function"> add1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span></code></pre>
+<p>That first step is pretty much optimal already.
+Next we need to traverse this dictionary and keep only the most frequent values, so a priority queue/heap is an obvious fit.
+Nothing is free though: inserts/removes are more expensive, but peeking the top is cheap.</p>
+<p>When I just started with Racket, I did not want to install any packages and did not even realize we had a heap implementation available.</p>
+<section
+  style="width: 100%; max-width: 100%; margin: 0 auto; text-align: center;">
+  <img src="assets/heap-docs-search.png"  alt="Searching for heap in Racket docs" 
+    style="max-width: 100%; height: auto; display: inline-block;">
+  
+  <caption style="margin-top: 0.5em;">
+    <p style="font-style: italic;">Top results of the quick docs lookup for heap-related modules are NOT very useful.</p>
+  </caption>
+  
+</section>
+<p>It lives <a rel="external" href="https://docs.racket-lang.org/data/Binary_Heaps.html">here</a> in <a rel="external" href="https://pkgs.racket-lang.org/package/data-lib">data-lib package</a>.
+The most useful functions are <code>make-heap</code>, <code>heap-add!</code>, and <code>heap-min</code>.
+<code>heap-min</code> is really more like "top", because with a custom comparator we can create either a min-heap or a max-heap.</p>
+<p>Here is a max-heap version:</p>
+<pre class="giallo z-code"><code data-lang="racket"><span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">require</span><span> d</span><span>ata/heap</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage">struct</span><span class="z-entity z-name"> item</span><span class="z-punctuation"> (</span><span class="z-variable z-other z-member z-variable">v</span><span class="z-variable z-other z-member z-variable">al</span><span class="z-variable z-other z-member z-variable"> f</span><span class="z-variable z-other z-member z-variable">req</span><span class="z-punctuation">)</span><span class="z-keyword z-keyword z-other"> #:transparent</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">i</span><span class="z-entity z-name z-function">tem&gt;</span><span class="z-variable z-variable z-parameter"> lhs</span><span class="z-variable z-variable z-parameter"> rhs</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">&gt;</span><span class="z-punctuation"> (</span><span>i</span><span>tem-freq</span><span> l</span><span>hs</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span>i</span><span>tem-freq</span><span> r</span><span>hs</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">t</span><span class="z-entity z-name z-function">op-k-frequent</span><span class="z-variable z-variable z-parameter"> nums</span><span class="z-variable z-variable z-parameter"> k</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> val-&gt;freq</span><span class="z-punctuation"> (</span><span class="z-support z-function">make-hash</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-list</span><span> n</span><span>ums</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">hash-update!</span><span> v</span><span>al-&gt;freq</span><span> i</span><span class="z-support z-function"> add1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> h</span><span class="z-punctuation"> (</span><span>m</span><span>ake-heap</span><span> i</span><span>tem&gt;</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span class="z-punctuation">(</span><span>v</span><span>al</span><span> f</span><span>req</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-hash</span><span> v</span><span>al-&gt;freq</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span>h</span><span>eap-add!</span><span> h</span><span class="z-punctuation"> (</span><span>i</span><span>tem</span><span> v</span><span>al</span><span> f</span><span>req</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for/list</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span>t</span><span class="z-punctuation"> (</span><span>i</span><span>n-heap/consume!</span><span> h</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span></span>
+<span class="giallo-l"><span class="z-punctuation">             [</span><span>i</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-range</span><span> k</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span>i</span><span>tem-val</span><span> i</span><span>t</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span></code></pre>
+<p>After the max-heap is built, <code>in-heap/consume!</code> pops items one by one from the top.
+Each pop is <code>O(log n)</code>, so this final loop is <code>O(k log n)</code>.
+This keeps every distinct value in the heap even though we only need <code>k</code> of them.</p>
+<p>A simple improvement is to switch to a <strong>min-heap of size <code>k</code></strong>.
+Since result order does not matter, we can keep only current top <code>k</code> elements and drop the smallest whenever heap size goes above <code>k</code>.</p>
+<pre class="giallo z-code"><code data-lang="racket"><span class="giallo-l"><span class="z-punctuation">(</span><span class="z-support z-function">require</span><span> d</span><span>ata/heap</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage">struct</span><span class="z-entity z-name"> item</span><span class="z-punctuation"> (</span><span class="z-variable z-other z-member z-variable">v</span><span class="z-variable z-other z-member z-variable">al</span><span class="z-variable z-other z-member z-variable"> f</span><span class="z-variable z-other z-member z-variable">req</span><span class="z-punctuation">)</span><span class="z-keyword z-keyword z-other"> #:transparent</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">i</span><span class="z-entity z-name z-function">tem&lt;</span><span class="z-variable z-variable z-parameter"> lhs</span><span class="z-variable z-variable z-parameter"> rhs</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">&lt;</span><span class="z-punctuation"> (</span><span>i</span><span>tem-freq</span><span> l</span><span>hs</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span>i</span><span>tem-freq</span><span> r</span><span>hs</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">t</span><span class="z-entity z-name z-function">op-k-frequent</span><span class="z-variable z-variable z-parameter"> nums</span><span class="z-variable z-variable z-parameter"> k</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> val-&gt;freq</span><span class="z-punctuation"> (</span><span class="z-support z-function">make-hash</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-list</span><span> n</span><span>ums</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">hash-update!</span><span> v</span><span>al-&gt;freq</span><span> i</span><span class="z-support z-function"> add1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> h</span><span class="z-punctuation"> (</span><span>m</span><span>ake-heap</span><span> i</span><span>tem&lt;</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span class="z-punctuation">(</span><span>v</span><span>al</span><span> f</span><span>req</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-hash</span><span> v</span><span>al-&gt;freq</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span>h</span><span>eap-add!</span><span> h</span><span class="z-punctuation"> (</span><span>i</span><span>tem</span><span> v</span><span>al</span><span> f</span><span>req</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">when</span><span class="z-punctuation"> (</span><span class="z-support z-function">&gt;</span><span class="z-punctuation"> (</span><span>h</span><span>eap-count</span><span> h</span><span class="z-punctuation">)</span><span> k</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">      (</span><span>h</span><span>eap-remove-min!</span><span> h</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for/list</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span>t</span><span class="z-punctuation"> (</span><span>i</span><span>n-heap/consume!</span><span> h</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span>i</span><span>tem-val</span><span> i</span><span>t</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span></code></pre>
+<p>Time to talk complexity.
+Let:</p>
+<ul>
+<li><code>N</code> = input length</li>
+<li><code>U</code> = number of unique elements (<code>U &lt;= N</code>)</li>
+<li><code>k</code> = output size (<code>k &lt;= U</code>)</li>
+</ul>
+<p>For the min-heap approach:</p>
+<ul>
+<li>Building <code>val-&gt;freq</code>: <code>O(N)</code> time, <code>O(U)</code> space</li>
+<li>Processing <code>U</code> hash entries with heap capped at <code>k</code>: <code>O(U log k)</code> time</li>
+<li>Consuming heap of size <code>k</code>: <code>O(k log k)</code> time</li>
+</ul>
+<p>So total time is <code>O(N + U log k + k log k)</code>.
+Because <code>k &lt;= U</code>, we usually simplify that to <code>O(N + U log k)</code>.
+Worst case (<code>U = N</code>) gives <code>O(N log k)</code>.</p>
+<p>Space is <code>O(U + k)</code> (<code>O(U)</code> hash + <code>O(k)</code> heap; output list is also <code>O(k)</code>).
+If we treat <code>k &lt;= U</code>, that is effectively <code>O(U)</code>.</p>
+<p>That would already be enough for Leetcode, but I also wanted to try the bucket solution.
+Instead of heap operations, we put each value into a vector bucket indexed by its frequency.</p>
+<pre class="giallo z-code"><code data-lang="racket"><span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">v</span><span class="z-entity z-name z-function">ector-update!</span><span class="z-variable z-variable z-parameter"> v</span><span class="z-variable z-variable z-parameter"> i</span><span class="z-variable z-variable z-parameter"> f</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">vector-set!</span><span> v</span><span> i</span><span class="z-punctuation"> (</span><span>f</span><span class="z-punctuation"> (</span><span class="z-support z-function">vector-ref</span><span> v</span><span> i</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation">(</span><span class="z-storage z-type">define</span><span class="z-punctuation"> (</span><span class="z-entity z-name z-function">t</span><span class="z-entity z-name z-function">op-k-frequent</span><span class="z-variable z-variable z-parameter"> nums</span><span class="z-variable z-variable z-parameter"> k</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> val-&gt;freq</span><span class="z-punctuation"> (</span><span class="z-support z-function">make-hash</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>i</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-list</span><span> n</span><span>ums</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">hash-update!</span><span> v</span><span>al-&gt;freq</span><span> i</span><span class="z-support z-function"> add1</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> N</span><span class="z-punctuation"> (</span><span class="z-support z-function">length</span><span> n</span><span>ums</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-storage z-type">define</span><span class="z-entity z-name"> v</span><span class="z-punctuation"> (</span><span class="z-support z-function">make-vector</span><span class="z-punctuation"> (</span><span class="z-support z-function">add1</span><span> N</span><span class="z-punctuation">)</span><span class="z-support z-function"> &#39;</span><span class="z-punctuation">(</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span class="z-punctuation">(</span><span>v</span><span>al</span><span> f</span><span>req</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-hash</span><span> v</span><span>al-&gt;freq</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span>v</span><span>ector-update!</span><span> v</span><span> f</span><span>req</span><span class="z-punctuation"> (</span><span class="z-storage z-type">lambda</span><span class="z-punctuation"> (</span><span class="z-variable z-variable z-parameter">x</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">cons</span><span> v</span><span>al</span><span> x</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">  (</span><span class="z-support z-function">for*/fold</span><span class="z-punctuation"> (</span><span class="z-punctuation">[</span><span>a</span><span>cc</span><span class="z-support z-function"> &#39;</span><span class="z-punctuation">(</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span><span class="z-punctuation"> [</span><span>n</span><span class="z-constant z-numeric"> 0</span><span class="z-punctuation">]</span><span class="z-keyword z-keyword z-other"> #:result</span><span> a</span><span>cc</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">             (</span><span class="z-punctuation">[</span><span>b</span><span>ucket</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-vector</span><span> v</span><span> N</span><span class="z-constant z-numeric"> -1</span><span class="z-constant z-numeric"> -1</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span></span>
+<span class="giallo-l"><span class="z-punctuation">              [</span><span>v</span><span>al</span><span class="z-punctuation"> (</span><span class="z-support z-function">in-list</span><span> b</span><span>ucket</span><span class="z-punctuation">)</span><span class="z-punctuation">]</span></span>
+<span class="giallo-l"><span class="z-keyword z-keyword z-other">              #:break</span><span class="z-punctuation"> (</span><span class="z-support z-function">=</span><span> k</span><span> n</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span>
+<span class="giallo-l"><span class="z-punctuation">    (</span><span class="z-support z-function">values</span><span class="z-punctuation"> (</span><span class="z-support z-function">cons</span><span> v</span><span>al</span><span> a</span><span>cc</span><span class="z-punctuation">)</span><span class="z-punctuation"> (</span><span class="z-support z-function">add1</span><span> n</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span><span class="z-punctuation">)</span></span></code></pre>
+<p>I am not convinced this is always faster in practice in Racket, but on paper inserts are cheaper than heap maintenance.
+(I suspect <code>vector-update!</code> api is not provided by default for a reason, they probably don't want to encourage mutation so I don't expect this to be super efficient..)</p>
+<p>Creating the <code>N + 1</code> buckets takes <code>O(N)</code> space.
+Inserting the <code>U</code> unique values takes <code>O(U)</code> time, and scanning backwards through the buckets is <code>O(N)</code> in the worst case.
+Since <code>U</code> and <code>k</code> cannot exceed <code>N</code>, the whole approach is <code>O(N)</code> time and <code>O(N)</code> space.</p>
+<p>So the tradeoff is roughly:</p>
+<ul>
+<li>min-heap: better memory when <code>k</code> is small, but <code>log k</code> factor in time</li>
+<li>buckets: better asymptotic time, but unconditional <code>O(N)</code> bucket storage</li>
+</ul>
+
+
+        
+    </article>
+
+    <!-- Comment section -->
+    
+      
+    
+
+
+    <!-- Page footer -->
+    
+    <footer>
+        <hr>
+        <p>
+            
+            
+            
+                
+                tagged
+                
+                    <a href="https://racket-raccoon.github.io/tags/leetcode/">leetcode</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/arrays/">arrays</a>
+                    
+                        
+                            
+                                ,
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/hash-table/">hash-table</a>
+                    
+                        
+                            
+                                and
+                            
+                        
+                    
+                
+                    <a href="https://racket-raccoon.github.io/tags/heap/">heap</a>
+                    
+                        
+                    
+                
+            
+        </p>
+
+        <!-- Revision history (optional) -->
+        
+          
+            
+              
+            
+          
+        
+
+        
+        
+    </footer>
+
+
+</article>
+
+
+    </main>
+    
+
+  </body>
+</html>

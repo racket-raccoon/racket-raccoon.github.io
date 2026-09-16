@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Racket Raccoon - leetcode</title>
+    <subtitle>It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://racket-raccoon.github.io/tags/leetcode/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-03-28T00:00:00+00:00</updated>
+    <id>https://racket-raccoon.github.io/tags/leetcode/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Leetcode #347: Top K Frequent Elements</title>
+        <published>2026-03-28T00:00:00+00:00</published>
+        <updated>2026-03-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/leetcode-top-k-frequent-elements/"/>
+        <id>https://racket-raccoon.github.io/leetcode-top-k-frequent-elements/</id>
+        
+        <summary type="html">&lt;p&gt;Just finished &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;leetcode.com&#x2F;problems&#x2F;top-k-frequent-elements&#x2F;description&#x2F;&quot;&gt;&quot;Top K Frequent Elements&quot;&lt;&#x2F;a&gt; and wanted to write down my thought process while it is still fresh.
+I also use this blog as a quick reference, so I wanted to add some notes on &lt;code&gt;data&#x2F;heap&lt;&#x2F;code&gt; to my little cheatsheet.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Leetcode #844: Backspace String Compare</title>
+        <published>2025-05-23T00:00:00+00:00</published>
+        <updated>2025-05-23T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/leetcode-backspace-string/"/>
+        <id>https://racket-raccoon.github.io/leetcode-backspace-string/</id>
+        
+        <summary type="html">&lt;p&gt;I&#x27;m gonna try to trick my brain into doing some leetcode challenges over the course of this year, so let&#x27;s start with something simple like &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;leetcode.com&#x2F;problems&#x2F;backspace-string-compare&#x2F;description&#x2F;&quot;&gt;&quot;Backspace String Compare&quot;&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>
