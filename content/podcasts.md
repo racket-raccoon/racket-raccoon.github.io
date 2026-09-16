@@ -74,14 +74,39 @@ I kept losing track of them, so I'm putting all the links in one place.
 [Spotify](https://open.spotify.com/episode/5LoGLyGjvvFw71EUzk29BB?si=e2wciY2bRYSaT0UNNdysIA)
 [Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Fstatic1.squarespace.com%2Fstatic%2F607a5a4ecbc7ae6b49698947%2Ft%2F62354c53e34fa57a0ea717e4%2F1647660257986%2FArrayCast%2BEpisode%2B23%2Bfinal.mp3&podcastId=3339972))
 
+## [Type Theory Forall podcast](https://www.typetheoryforall.com/)
+* [Episode 55 - The Death of OO, The Beauty of Scheme: Mike Sperber](https://www.typetheoryforall.com/episodes/the-death-of-oo-the-beauty-of-scheme-bob-konf-and-fun-arch)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/55-the-death-of-oo-the-beauty-of-scheme/id1546295833?i=1000733769049)
+[YouTube](https://www.youtube.com/watch?v=TCXm4hUsFqA)
+[Spotify](https://open.spotify.com/episode/3mh7bwAJaBSFntDtoEoVzj)
+[Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Fapi.typetheoryforall.com%2Fuploads%2FType_Theory_EP_55_audio_1_4d05262c17.mp3&podcastId=3194625))
+* [Episode 64 - PL Education in the Age of AI: Shriram Krishnamurthi](https://www.typetheoryforall.com/episodes/pl-education-in-the-age-of-ai)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/64-pl-education-in-the-age-of-ai-shriram-krishnamurthi/id1546295833?i=1000787940293)
+[YouTube](https://www.youtube.com/watch?v=dS5e8z8S8Fc)
+[Spotify](https://open.spotify.com/episode/3or9XxCfFcpAirwyCxuuRY)
+[Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Fapi.typetheoryforall.com%2Fuploads%2Fepisode64_57143b322f.mp3&podcastId=3194625))
+
+## [Mostly Erlang](https://mostlyerlang.com/)
+* [Episode 46 - Scheme and Erlang: Joseph Joins](https://mostlyerlang.com/2014/10/31/046-scheme-and-erlang/)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/046-scheme-and-erlang/id638766008?i=1000321390318)
+[MP3](https://mostlyerlang.files.wordpress.com/2014/10/mostly_erlang_46_scheme.mp3))
+* [Episode 50 - miniKanren with William Byrd](https://mostlyerlang.com/2014/11/26/050-minikanren-with-william-byrd/)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/050-minikanren-with-william-byrd/id638766008?i=1000326164056)
+[MP3](https://mostlyerlang.files.wordpress.com/2014/11/050_minikanran.mp3))
+
+## [FOSS and Crafts](https://fossandcrafts.org/)
+* [Episode 47 - What is Lisp?](https://fossandcrafts.org/episodes/47-what-is-lisp.html)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/47-what-is-lisp/id1523505575?i=1000567519761)
+[Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Ffossandcrafts.org%2Fmedia%2Fepisodes%2F047-what-is-lisp.mp3&podcastId=3041357))
+* [Episode 49 - Lisp but Beautiful; Lisp for Everyone](https://fossandcrafts.org/episodes/49-lisp-but-beautiful-lisp-for-everyone.html)\
+([Apple Podcasts](https://podcasts.apple.com/us/podcast/49-lisp-but-beautiful-lisp-for-everyone/id1523505575?i=1000569958538)
+[Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Ffossandcrafts.org%2Fmedia%2Fepisodes%2F049-lisp-but-beautiful-lisp-for-everyone.mp3&podcastId=3041357))
+
 ## `cat ~/podcasts/etc`
 * [The Haskell Interlude #13 – David Christiansen](https://haskell.foundation/podcast/13/)\
 ([Apple Podcasts](https://podcasts.apple.com/us/podcast/13-david-christiansen/id1581807590?i=1000565750598)
 [Spotify](https://open.spotify.com/episode/2RJ0aBcOjsj2mvNITAChSM?si=xnTtVhJqQgurdou6caslDA)
 [Podcast Addict](https://podcastaddict.com/episode/https%3A%2F%2Fwww.buzzsprout.com%2F1817535%2Fepisodes%2F10738139-13-david-christiansen.mp3&podcastId=3542531))
-* [Mostly Erlang #046 - Scheme and Erlang: Joseph Joins](https://mostlyerlang.com/2014/10/31/046-scheme-and-erlang/)\
-([Apple Podcasts](https://podcasts.apple.com/gb/podcast/046-scheme-and-erlang/id638766008?i=1000321390318)
-[Podcast Addict](https://podcastaddict.com/podcast-mostly-erlang/episode/180197))
 * [Future of Coding #41 - The Aesthetics of Programming Tools: Jack Rusher](https://futureofcoding.org/episodes/041.html)\
 ([Apple Podcasts](https://podcasts.apple.com/us/podcast/the-aesthetics-of-programming-tools-jack-rusher/id1265527976?i=1000445384511)
 [Spotify](https://open.spotify.com/episode/4rt2zhXl6ER9i9jVzirDBY?si=8e84f946e046461d)
@@ -98,5 +123,5 @@ I kept losing track of them, so I'm putting all the links in one place.
 
 ---
 
-[^little typer]: Pocast about _dependent type system_, not directly lisp related but still somehow adjacent
+[^little typer]: Pocast about _dependent type system_, not directly lisp related but still somewhat adjacent
 [^teaching]: Pocast about _teaching programming_, less about Racket and more about functional programming in general
