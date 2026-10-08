@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Racket Raccoon - benchmarks</title>
+    <subtitle>It&#x27;s a Bird... It&#x27;s a Plane... It&#x27;s yet another blog!</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://racket-raccoon.github.io/tags/benchmarks/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-05-24T00:00:00+00:00</updated>
+    <id>https://racket-raccoon.github.io/tags/benchmarks/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Same Threading Syntax but Less Allocation</title>
+        <published>2026-05-24T00:00:00+00:00</published>
+        <updated>2026-05-24T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://racket-raccoon.github.io/ebb-threading/"/>
+        <id>https://racket-raccoon.github.io/ebb-threading/</id>
+        
+        <summary type="html">&lt;p&gt;This is a small braindump on why you might want to use &lt;code&gt;ebb&#x2F;threading&lt;&#x2F;code&gt; as a drop-in replacement for &lt;code&gt;threading-lib&lt;&#x2F;code&gt;.
+Same familiar &lt;code&gt;~&amp;gt;&lt;&#x2F;code&gt; shape, but with &lt;code&gt;ebb&#x2F;forms&lt;&#x2F;code&gt; it can avoid some intermediate list allocation.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>
